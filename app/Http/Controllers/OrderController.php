@@ -100,7 +100,7 @@ class OrderController extends Controller
         // 2. バリデーションに通ると
         // 3. validated() で「検証済みの値」だけを取得
         $validatedData = $request->validated(); // 4.全てのバリデーション済みの住所データを配列で取得
-/*
+        /*
         $validatedData = 
         array:20 [▼
   "order_sei" => "瀬川"
@@ -124,12 +124,12 @@ class OrderController extends Controller
   "delivery_add02" => "稲城市平尾"
   "delivery_add03" => null
 ]
-*/    
+*/
 
         // 送料計算(コンストラクタでShippingFeeServiceを依存注入しているので、直接呼び出せる)
         //$shippingFee = $this->shippingFeeService->getFeeByPrefecture($validatedData["delivery_add01"]);
-$getCartItems = $this->cartService->getCartItems(null, $validatedData["delivery_add01"]);
-/* $cart=
+        $getCartItems = $this->cartService->getCartItems(null, $validatedData["delivery_add01"]);
+        /* $cart=
 array:4 [▼
   "items" => array:2 [▼
     0 => array:6 [▼
@@ -158,8 +158,7 @@ array:4 [▼
         // セッションに住所を保存（戻るときに使用）
         session(['address' => $validatedData]);
 
-        return view('order.confirm',compact('getCartItems', 'validatedData'));
-
+        return view('order.confirm', compact('getCartItems', 'validatedData'));
     }
 
     public function hoge(Request $request)
