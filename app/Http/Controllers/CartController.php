@@ -21,8 +21,6 @@ class CartController extends Controller
         $this->shippingFeeService = $shippingFeeService;
     }
 
-
-
     public function index()
     {
         $user = auth()->user();

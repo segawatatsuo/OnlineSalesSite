@@ -85,6 +85,23 @@
             cursor: pointer;
         }
 
+        .pay-button {
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+            display: block;
+            padding: 0.5rem;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            border: 1px solid #ffd814;
+            background-color: #ffd814;
+        }
+
+        .pay-button {
+            cursor: pointer;
+        }
+
+
         .spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
             border-left: 4px solid #3498db;
@@ -105,7 +122,8 @@
         }
 
         #loading-overlay {
-            display: none; /* ここが重要 */
+            display: none;
+            /* ここが重要 */
             justify-content: center;
             align-items: center;
             position: fixed;

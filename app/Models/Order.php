@@ -8,20 +8,22 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'order_number', 
-        'customer_id', 
-        'delivery_id', 
-        'user_id', 
-        'total_price', 
-        'shipping_date', 
+        'order_number',
+        'customer_id',
+        'delivery_id',
+        'user_id',
+        'total_price',
+        'shipping_date',
         'tracking_number',
         'shipping_company',
-        'delivery_date', 
-        'delivery_time', 
-        'your_request', 
+        'delivery_date',
+        'delivery_time',
+        'your_request',
         'status',
         'amazon_checkout_session_id',
-        'square_payment_id'
+        'square_payment_id',
+        'amazon_chargePermissionId',
+        'amazon_chargeId'
     ];
 
     // ステータス定数
@@ -90,7 +92,7 @@ class Order extends Model
     }
 
 
-        /**
+    /**
      * 新しい注文番号を生成します。
      * 重複が発生した場合は自動的にリトライします。
      *
@@ -105,8 +107,8 @@ class Order extends Model
         while ($attempt < $maxAttempts) {
             $date = now()->format('Ymd');
             $latestOrder = self::whereDate('created_at', now()->toDateString())
-                               ->latest('id')
-                               ->first();
+                ->latest('id')
+                ->first();
 
             $number = $latestOrder ? ((int)substr($latestOrder->order_number, -4)) + 1 : 1;
             $orderNumber = 'ORD' . $date . str_pad($number, 4, '0', STR_PAD_LEFT);
@@ -124,6 +126,4 @@ class Order extends Model
         \Log::error('Failed to generate a unique order number after ' . $maxAttempts . ' attempts.');
         throw new \RuntimeException('Unable to generate a unique order number.');
     }
-
-
 }

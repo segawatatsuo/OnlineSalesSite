@@ -70,8 +70,12 @@ class OrderController extends Controller
 
         if ($user && $user->user_type === 'corporate') {
             $prefecture = $user->corporateCustomer->delivery_add01;
+            $corporat_customer = $user->corporateCustomer;
+            session(['address' => $corporat_customer]);
+
             // CartService は $this->cartService を使う（__construct で注入済）
             $cart = $this->cartService->getCartItems($user, $prefecture);
+            $getCartItems = $this->cartService->getCartItems(null, $prefecture);
             return view('order.corporate_confirm', [
                 'user' => $user,
                 'cart' => $cart['items'],
@@ -79,6 +83,7 @@ class OrderController extends Controller
                 'shipping_fee' => $cart['shipping_fee'],
                 'total' => $cart['total'],
                 'deliveryTimes' => $deliveryTimes,
+                'getCartItems' => $getCartItems
             ]);
         }
 
@@ -89,7 +94,7 @@ class OrderController extends Controller
             'subtotal' => $cart['subtotal'],
             'shipping_fee' => $cart['shipping_fee'],
             'total' => $cart['total'],
-            'deliveryTimes' => $deliveryTimes, // ← これを追加！
+            'deliveryTimes' => $deliveryTimes,
         ]);
     }
 
@@ -100,6 +105,7 @@ class OrderController extends Controller
         // 2. バリデーションに通ると
         // 3. validated() で「検証済みの値」だけを取得
         $validatedData = $request->validated(); // 4.全てのバリデーション済みの住所データを配列で取得
+
         /*
         $validatedData = 
         array:20 [▼
@@ -129,31 +135,6 @@ class OrderController extends Controller
         // 送料計算(コンストラクタでShippingFeeServiceを依存注入しているので、直接呼び出せる)
         //$shippingFee = $this->shippingFeeService->getFeeByPrefecture($validatedData["delivery_add01"]);
         $getCartItems = $this->cartService->getCartItems(null, $validatedData["delivery_add01"]);
-        /* $cart=
-array:4 [▼
-  "items" => array:2 [▼
-    0 => array:6 [▼
-      "product_id" => 4
-      "product_code" => "PS04"
-      "name" => "エアーストッキングプレミアムシルク 120G ブロンズ"
-      "quantity" => 1
-      "price" => 3300
-      "subtotal" => 3300
-    ]
-    1 => array:6 [▼
-      "product_id" => 10
-      "product_code" => "DL05"
-      "name" => "エアーストッキングダイアモンドレッグス 120G ダンス"
-      "quantity" => 1
-      "price" => 4400
-      "subtotal" => 4400
-    ]
-  ]
-  "subtotal" => 7700
-  "shipping_fee" => 1500
-  "total" => 9200
-]
-*/
 
         // セッションに住所を保存（戻るときに使用）
         session(['address' => $validatedData]);

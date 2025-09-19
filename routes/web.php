@@ -30,6 +30,7 @@ use App\Admin\Controllers\MailPreviewController;
 
 use Square\Environments;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\SquarePaymentController;
 
 // ホーム → 商品一覧にリダイレクト
 //Route::get('/', fn() => redirect('/products'));
@@ -57,12 +58,12 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::post('add', [CartController::class, 'add'])->name('add');
     Route::post('update', [CartController::class, 'update'])->name('update');
     Route::post('remove', [CartController::class, 'remove'])->name('remove');
-    
+
     // Amazon Pay
     Route::get('show', [CartController::class, 'show'])->name('show');
     Route::post('checkout-session', [CartController::class, 'createCheckoutSession'])->name('checkout-session');
     Route::get('complete', [CartController::class, 'review'])->name('amazonpay.review');
-    
+
     //Squareのカード入力画面
     Route::post('square-payment', [CartController::class, 'squarePayment'])->name('square-payment');
 
@@ -76,7 +77,7 @@ Route::prefix('order')->name('order.')->group(function () {
     Route::post('storeOrder', [OrderController::class, 'storeOrder'])->name('storeOrder'); //store
     Route::get('complete', [OrderController::class, 'complete'])->name('complete');
     Route::post('hoge', [OrderController::class, 'hoge'])->name('hoge');
-    
+
     Route::get('modify/{type}', [OrderController::class, 'modify'])->name('modify');
 });
 
@@ -212,137 +213,41 @@ Route::get('/rule', [PageController::class, 'rule'])->name('rule');
 //特定商取引法に基づく表示
 Route::get('/legal', [PageController::class, 'legal'])->name('legal');
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Amazon Pay Routes
 |--------------------------------------------------------------------------
 */
-/*
-Route::prefix('amazon-pay')->name('amazon-pay.')->group(function () {
 
-    Route::post('/payment', [AmazonPayController::class, 'payment'])
-    ->name('payment');  // amazon-pay.payment
-   
-    // 決済セッション作成（金額確定後）
-    Route::post('/create-session', [AmazonPayController::class, 'createPaymentSession'])->name('create-session');
-    
-    // 決済完了
-    Route::get('/return', [AmazonPayController::class, 'completePayment'])->name('complete');
-    
-    // 決済キャンセル
-    Route::get('/cancel', [AmazonPayController::class, 'cancelPayment'])->name('cancel');
-    
-    // エラーページ
-    Route::get('/error', [AmazonPayController::class, 'errorPayment'])->name('error');
-
-    // Webhook
-    Route::post('/webhook', [AmazonPayController::class, 'webhook']);
-
-});
-*/
 Route::prefix('amazon-pay')->name('amazon-pay.')->group(function () {
     Route::get('/payment', [AmazonPayController::class, 'showPayment'])->name('payment');
     Route::post('/create-session', [AmazonPayController::class, 'createSession'])->name('create-session');
-    //Amazon が checkoutSessionId を持った状態で ここにリダイレクトします。
-    Route::get('/complete', [AmazonPayController::class, 'complete'])->name('complete');
+    Route::get('/complete', [AmazonPayController::class, 'complete'])->name('complete'); //Amazon が checkoutSessionId を持った状態で/completeにリダイレクトします。
 
     Route::get('/cancel', [AmazonPayController::class, 'cancelPayment'])->name('cancel');
     Route::get('/error', [AmazonPayController::class, 'errorPayment'])->name('error');
     Route::get('/return', [AmazonPayController::class, 'amazonPayReturn'])->name('return');
     Route::post('/webhook', [AmazonPayController::class, 'webhook'])->name('webhook');
+    /*動作確認*/
+    Route::get('/captureOrder', [AmazonPayController::class, 'captureOrder'])->name('captureOrder');
 });
 
 
 
-
-
-
-
-
-
-
-
-
-
-Route::get('/ssl-test', function () {
-    try {
-        $response = Http::timeout(10)->get('https://example.com');
-        return '✅ 通信成功: ステータスコード ' . $response->status();
-    } catch (\Exception $e) {
-        return '❌ 通信エラー: ' . $e->getMessage();
-    }
-});
-
-
-Route::get('/square-api-test', function () {
-    // .envから環境変数を取得
-    $squareEnvironment = env('SQUARE_ENVIRONMENT', 'sandbox');
-    $baseUrl = ($squareEnvironment === 'sandbox')
-        ? Environments::Sandbox->value // Sandbox環境のURL
-        : Environments::Production->value; // Production環境のURL
-
-    // Square APIの適当なエンドポイント（例: /v2/locations）
-    // 実際には認証なしではアクセスできないが、接続性テストには使える
-    $testUrl = $baseUrl . '/v2/locations';
-
-    // cURLを使って通信テスト
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $testUrl);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HEADER, true); // ヘッダーも取得
-    curl_setopt($ch, CURLOPT_NOBODY, true); // ボディは取得しない (HEADリクエストのように)
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10); // タイムアウトを10秒に設定
-
-    // cacert.pemのパスを明示的に指定
-    $caCertPath = '/home/iiyama/online-shop-ccm/storage/ssl/cacert.pem';
-    if (file_exists($caCertPath)) {
-        curl_setopt($ch, CURLOPT_CAINFO, $caCertPath);
-        curl_setopt($ch, CURLOPT_CAPATH, dirname($caCertPath)); // CAPATHも設定
-    } else {
-        return 'エラー: cacert.pemが見つかりません。パスを確認してください: ' . $caCertPath;
-    }
-
-    // 接続のデバッグ情報を出力
-    curl_setopt($ch, CURLOPT_VERBOSE, true);
-    $verbose = fopen('php://temp', 'rw+');
-    curl_setopt($ch, CURLOPT_STDERR, $verbose);
-
-    $response = curl_exec($ch);
-    $curlError = curl_error($ch);
-    $curlErrno = curl_errno($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-    rewind($verbose);
-    $verboseLog = stream_get_contents($verbose);
-    fclose($verbose);
-
-    curl_close($ch);
-
-    if ($curlError) {
-        return 'Square APIへの通信エラーが発生しました。<br>' .
-               'cURLエラー (' . $curlErrno . '): ' . $curlError . '<br>' .
-               '詳細ログ:<pre>' . htmlspecialchars($verboseLog) . '</pre>';
-    } else {
-        return 'Square APIへの通信に成功しました。<br>' .
-               'HTTPステータスコード: ' . $httpCode . '<br>' .
-               '詳細ログ:<pre>' . htmlspecialchars($verboseLog) . '</pre>' .
-               '（注意: 認証エラーは正常な接続を示します。通信自体が成功しているかを確認してください。）';
-    }
-});
-
-
-
-// Admin画面での商品発送メールのプレビュー
-// ルートをAdmin認証が必要なグループ内に配置
 /*
-Route::middleware(['admin.auth'])->group(function () {
-    Route::get('admin/mail-preview/{orderId}', [MailPreviewController::class, 'preview'])
-        ->name('admin.mail-preview')
-        ->where('orderId', '[0-9]+'); // 数字のみ許可
-});
+|--------------------------------------------------------------------------
+| square Routes
+|--------------------------------------------------------------------------
 */
+
+Route::prefix('square')->name('square.')->group(function () {
+    Route::get('/checkout', [SquarePaymentController::class, 'checkout'])->name('checkout'); // フロント画面
+    Route::post('/process-payment', [SquarePaymentController::class, 'processPayment'])->name('process-payment');
+    Route::post('/capture-payment/{paymentId}', [SquarePaymentController::class, 'capturePayment'])->name('capture-payment');
+});
+
+
+
 
 // Admin画面での商品発送メールのプレビュー
 // ルートをAdmin認証が必要なグループ内に配置
@@ -351,17 +256,16 @@ Route::middleware(['admin.auth'])->group(function () {
     Route::get('admin/mail-preview/{orderId}', [MailPreviewController::class, 'preview'])
         ->name('admin.mail-preview')
         ->where('orderId', '[0-9]+'); // 数字のみ許可
-    
+
     // テンプレートベースプレビュー
     Route::get('admin/mail-preview-template/{orderId}', [MailPreviewController::class, 'previewTemplate'])
         ->name('admin.mail-preview-template')
         ->where('orderId', '[0-9]+'); // 数字のみ許可
 });
 
-// または、admin認証ミドルウェアがない場合は
-// Route::get('admin/mail-preview/{orderId}', [MailPreviewController::class, 'preview'])
-//     ->name('admin.mail-preview')
-//     ->where('orderId', '[0-9]+');
-// Route::get('admin/mail-preview-template/{orderId}', [MailPreviewController::class, 'previewTemplate'])
-//     ->name('admin.mail-preview-template')
-//     ->where('orderId', '[0-9]+');
+
+Route::get('/debug-square', function () {
+    $service = new App\Services\SquareService();
+    $debug = $service->debugClientStructure();
+    return response()->json($debug, 200, [], JSON_PRETTY_PRINT);
+});

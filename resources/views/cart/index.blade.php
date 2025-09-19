@@ -65,7 +65,11 @@
 
         <div class="cart-actions">
             <button class="continue-shopping"
-                onclick="window.location.href='{{ asset('product/' . $category) }}'">買い物を続ける</button>
+                onclick="window.location.href='{{ ($category ?? null) ? asset('product/' . $category) : url('/') }}'">
+                買い物を続ける
+            </button>
+
+
             <button class="checkout-btn" onclick="window.location.href='{{ route('order.create') }}'">購入手続きに進む</button>
         </div>
     </main>

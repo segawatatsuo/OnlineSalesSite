@@ -33,20 +33,28 @@ class AmazonPayService
     /**
      * 売上確定（Capture）
      */
-    public function captureCharge(string $authorizationId, int $amount): array
+    public function captureCharge(string $chargeId, int $amount): array
     {
-        $response = $this->client->captureCharge(
-            $authorizationId, // ✅ Authorization ID を渡す
-            [
-                'captureAmount' => [
-                    'amount'       => $amount,
-                    'currencyCode' => 'JPY',
-                ],
+        $payload = [
+            'captureAmount' => [
+                'amount'       => $amount,
+                'currencyCode' => 'JPY',
             ],
-            [] // options
-        );
+        ];
 
-        return json_decode($response['response']['body'], true);
+        $headers = [
+            'x-amz-pay-idempotency-key' => 'capture-' . bin2hex(random_bytes(16)), // ✅ ドットなし
+        ];
+
+        $response = $this->client->captureCharge($chargeId, $payload, $headers);
+
+        if (is_string($response)) {
+            $response = json_decode($response, true);
+        } elseif (isset($response['response']) && is_string($response['response'])) {
+            $response['response'] = json_decode($response['response'], true);
+        }
+
+        return $response;
     }
 
 
@@ -78,8 +86,6 @@ class AmazonPayService
     }
 
 
-
-
     public function getCharge(string $chargeId): array
     {
         return $this->client->getCharge($chargeId);
@@ -87,7 +93,7 @@ class AmazonPayService
     /**
      * 決済セッションを作成
      */
-    public function createSession($amount, $merchantReferenceId = null)
+    public function createPayload($amount, $merchantReferenceId = null)
     {
         $merchantReferenceId = $merchantReferenceId ?: 'Order_' . time();
 
@@ -96,7 +102,7 @@ class AmazonPayService
 
         $payload = [
             'webCheckoutDetails' => [
-                'checkoutResultReturnUrl' => route('amazon-pay.complete'),
+                'checkoutResultReturnUrl' => route('amazon-pay.complete'), //AmazonがcheckoutSessionIdを持った状態でamazon-pay/completeにリダイレクトしてくるのでコントローラのcomplete()を実行できます
                 'checkoutCancelUrl' => route('amazon-pay.cancel'),
                 'checkoutMode' => 'ProcessOrder',
             ],
@@ -108,7 +114,7 @@ class AmazonPayService
                 'noteToBuyer' => '料金のお支払いです',
             ],
             'paymentDetails' => [
-                'paymentIntent' => 'AuthorizeWithCapture',
+                'paymentIntent' => 'Authorize', // 与信のみ
                 'chargeAmount' => [
                     'amount' => (string)$amount,
                     'currencyCode' => 'JPY',
@@ -130,85 +136,52 @@ class AmazonPayService
     }
 
 
-
-
-
-
-
     /**
-     * 決済を完了
+     * completeCheckoutSession()用の金額設定を生成
      */
-
-    /*
-    public function completePayment($amazonCheckoutSessionId, $amount)
+    public function chargeAmount($amount): array
     {
-        // 注文情報を取得
-        $result = $this->client->getCheckoutSession($amazonCheckoutSessionId);
-
-        $response = json_decode($result['response'], true);
-
-        // 購入者のemailアドレスを確認
-        $email = $response['buyer']['email'] ?? null;
-        if (empty($email)) {
-            throw new \Exception('購入者のメールアドレスが取得できませんでした。');
-        }
-
-        // 売上請求処理
-        $payload = [
+        return [
             'chargeAmount' => [
-                'amount' => (string)$amount,
+                'amount' => (string) $amount,
                 'currencyCode' => 'JPY',
             ],
         ];
-        
-        $checkoutResponse = $this->client->completeCheckoutSession($amazonCheckoutSessionId, $payload);
-
-        if ($checkoutResponse['status'] !== 200) {
-            throw new \Exception('決済の完了処理に失敗しました。');
-        }
-
-        return [
-            'email' => $email,
-            'checkoutSessionId' => $amazonCheckoutSessionId,
-            'response' => $response,
-        ];
     }
-    */
 
-    public function completePayment(string $amazonCheckoutSessionId): array
+    /*仮注文*/
+    public function pendingPayment(string $amazonCheckoutSessionId): array
     {
-        \Log::info('AmazonPay completePayment() 開始', [
-            'amazonCheckoutSessionId' => $amazonCheckoutSessionId
-        ]);
+
+        \Log::info('AmazonPay pendingPayment() 開始', ['amazonCheckoutSessionId' => $amazonCheckoutSessionId]);
 
         try {
             $idempotencyKey = uniqid('amazonpay_', true);
 
+            // createPayload() で保存しておいた金額を取得
+            $amount = session('payment_amount');
+            // サービスクラスのメソッドで 金額と通貨 を生成
+            $amount_jpy = $this->chargeAmount($amount);
+
             $response = $this->client->completeCheckoutSession(
                 $amazonCheckoutSessionId,
-                [
-                    'headers' => [
-                        'x-amz-pay-idempotency-key' => $idempotencyKey,
-                    ],
-                ]
+                json_encode($amount_jpy), // JSON化して渡す
+                ['x-amz-pay-idempotency-key' => $idempotencyKey]
             );
 
-            \Log::info('AmazonPay completePayment() 結果', ['raw' => $response]);
+            \Log::info('AmazonPay pendingPayment() 結果', ['raw' => $response]);
+            //dd(json_decode($response['response'], true));
 
-            //$amount = (float)($response['chargeAmount']['amount'] ?? 0);
-            $amount = 0;
-            if (!empty($response['paymentDetails']['chargeAmount']['amount'])) {
-                $amount = (float) $response['paymentDetails']['chargeAmount']['amount'];
-            }
+            $checkoutSession = json_decode($response['response'], true);
+            // 与信ID（後でキャプチャに必要）
+            $chargePermissionId = $checkoutSession['chargePermissionId'];
 
-
-            // ✅ AuthorizationId を取得
-            $authorizationId = $response['chargePermissionDetails']['authorizationDetails']['authorizationId'] ?? null;
+            // 与信取引のID
+            $chargeId = $checkoutSession['chargeId'];
 
             // === セッションからカート & 住所を取得 ===
             $cart = session('cart', []);
             $address = session('address', []);
-
             if (empty($cart)) {
                 throw new \Exception('カート情報が空です。');
             }
@@ -254,10 +227,10 @@ class AmazonPayService
                 'your_request'   => $address['your_request'] ?? null,
                 'amazon_checkout_session_id' => $amazonCheckoutSessionId,
                 'amazon_charge_id' => $response['chargeId'] ?? null,
-                //'authorization_id' => $response['authorizationId'] ?? null, // ✅ ここ
+
                 // ✅ ここを追加
-                'authorization_id' => $response['authorizationId'] ?? null,
-                'amazon_charge_permission_id' => $response['chargePermissionId'] ?? null,
+                'amazon_chargePermissionId' => $chargePermissionId,
+                'amazon_chargeId' => $chargeId,
                 'status'         => Order::STATUS_AUTH, // 与信済
             ]);
 
@@ -280,19 +253,15 @@ class AmazonPayService
                 'order'    => $order,
                 'customer' => $customer,
                 'delivery' => $delivery,
+                'amazon_chargePermissionId' => $chargePermissionId,
+                'amazon_chargeId' => $chargeId,
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('AmazonPay completePayment エラー: ' . $e->getMessage(), ['exception' => $e]);
+            \Log::error('AmazonPay pendingPayment エラー: ' . $e->getMessage(), ['exception' => $e]);
             throw $e;
         }
     }
-
-
-
-
-
-
 
 
     /**

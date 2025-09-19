@@ -106,23 +106,88 @@ class OrderController extends AdminController
         $grid->column('shipping_company', __('運送会社名'));
         $grid->column('created_at', __('作成日時'));
 
+        $grid->column('amazon_status', 'Amazon Pay 状態')->display(function () {
+            if (!$this->amazon_chargeId) {
+                return '-';
+            }
+
+            $amazonPay = app(\App\Services\AmazonPayService::class);
+
+            try {
+                $charge = $amazonPay->getCharge($this->amazon_chargeId);
+                $chargeData = json_decode($charge['response'], true);
+                $state = $chargeData['statusDetails']['state'] ?? null;
+
+                switch ($state) {
+                    case 'Captured':
+                        return '<span style="color:green;">売上確定済み</span>';
+                    case 'Authorized':
+                        return '<span style="color:orange;">与信済み</span>';
+                    default:
+                        return '<span style="color:red;">' . ($state ?? '不明') . '</span>';
+                }
+            } catch (\Exception $e) {
+                return '<span style="color:red;">エラー</span>';
+            }
+        });
+
+        /*SQUARE*/
+        $grid->column('square_status', 'Square 状態')->display(function () {
+            if (!$this->square_payment_id) {
+                return '-';
+            }
+
+            $square = app(\App\Services\SquareService::class);
+
+            try {
+                $response = $square->getPayment($this->square_payment_id);
+
+                if ($response) {
+                    //$payment = $response->getResult()->getPayment();
+                    $status = $response->getStatus();
+
+                    switch ($status) {
+                        case 'COMPLETED':
+                            return '<span style="color:green;">売上確定済み</span>';
+                        case 'APPROVED':
+                        case 'AUTHORIZED':
+                            return '<span style="color:orange;">与信済み</span>';
+                        case 'CANCELED':
+                            return '<span style="color:red;">キャンセル済み</span>';
+                        default:
+                            return '<span style="color:red;">' . $status . '</span>';
+                    }
+                } else {
+                    return '<span style="color:red;">エラー</span>';
+                }
+            } catch (\Exception $e) {
+                return '<span style="color:red;">エラー</span>';
+            }
+        });
+
+
+
         // 行アクション（発送メール, Capture）
-$grid->actions(function ($actions) {
-    $order = $actions->row;
+        $grid->actions(function ($actions) {
+            $order = $actions->row;
 
-    // 発送メールは常に表示
-    $actions->add(new SendShippingMail());
+            // 発送メールは常に表示
+            $actions->add(new SendShippingMail());
 
-    // 与信状態のときだけ「売上確定」と「キャンセル」を表示
-    if ($order->status === \App\Models\Order::STATUS_AUTH) {
-        $actions->add(new \App\Admin\Actions\Order\CaptureCharge());
-        $actions->add(new \App\Admin\Actions\Order\CancelCharge());
-    }
-});
+            // 与信状態のときだけ「売上確定」と「キャンセル」を表示
+            if ($order->status === \App\Models\Order::STATUS_AUTH) {
+                //$actions->add(new \App\Admin\Actions\Order\CaptureCharge());
+                //$actions->add(new \App\Admin\Actions\Order\CancelCharge());
+                if ($order->amazon_chargeId) {
+                    $actions->add(new \App\Admin\Actions\Order\CaptureCharge());
+                }
+                if ($order->square_payment_id) {
+                    $actions->add(new \App\Admin\Actions\Order\CaptureSquarePayment());
+                }
+                $actions->add(new \App\Admin\Actions\Order\CancelCharge()); // ← Square 用キャンセルも後で分けると良い
 
-
-
-
+            }
+        });
 
         // フッターにCSS（省略可）
         $grid->footer(function () {
@@ -154,8 +219,6 @@ $grid->actions(function ($actions) {
 
         return $grid;
     }
-
-
 
     /**
      * Make a show builder.
@@ -233,8 +296,6 @@ $grid->actions(function ($actions) {
 
             return $html;
         })->unescape();
-
-
 
         // 詳細画面にカスタムアクションボタンを追加
         // 方法1: HTMLとして直接追加

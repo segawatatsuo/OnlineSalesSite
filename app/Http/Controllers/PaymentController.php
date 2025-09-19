@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use Square\SquareClient;
 use Square\Types\Money;
 use Square\Payments\Requests\CreatePaymentRequest;
 use Square\Types\Currency;
-use Ramsey\Uuid\Uuid;
-use App\Models\Order;
 use Square\Environments;
 use Square\Exceptions\SquareApiException;
+
+
+use Ramsey\Uuid\Uuid;
+use App\Models\Order;
+
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log; // Logファサードをuseする
@@ -77,7 +81,6 @@ class PaymentController extends Controller
                 ]
             );
             Log::debug('PaymentController: SquareClient初期化完了');
-            // Log::debug('PaymentController: Square Environment', ['env' => env('SQUARE_ENVIRONMENT', 'sandbox'), 'baseUrl' => $square_client->getConfig()->getBaseUrl()]); // この行を削除
 
             $money = new Money();
             $money->setAmount($square_amount);
@@ -130,7 +133,6 @@ class PaymentController extends Controller
                         'payment' => $payment
                     ], 500);
                 }
-
             } else {
                 $firstError = $errors[0];
                 $errorCode = $firstError->getCode();

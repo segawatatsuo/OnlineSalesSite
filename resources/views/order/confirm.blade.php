@@ -3,7 +3,6 @@
 @section('title', 'トップページ')
 
 @push('styles')
-    {{-- _responsive.cssは本当は共通CSSだがtop-page.cssの後に読み込まないと崩れるため --}}
     <link rel="stylesheet" href="{{ asset('css/kakunin-page.css') }}">
     <link rel="stylesheet" href="{{ asset('css/_responsive.css') }}">
 
@@ -20,10 +19,6 @@
             border-bottom: none;
         }
     </style>
-
-
-
-
 @endpush
 
 @section('content')
@@ -90,15 +85,7 @@
                                     <th class="text-right">小計</th>
                                 </tr>
                             </thead>
-                            {{--
-                            <tbody>
-                                <tr>
-                                    <td>エアーストッキングプレミアムシルク 120G テラコッタ</td>
-                                    <td class="text-center">1</td>
-                                    <td class="text-right">3,300円</td>
-                                </tr>
-                            </tbody>
-                            --}}
+
                             <tbody>
                                 @foreach ($cart as $item)
                                     @php
@@ -116,14 +103,6 @@
 
 
 
-                            <!--
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="2" class="text-right">合計金額</th>
-                                        <th class="text-right">&yen;{{ number_format($total) }}</th>
-                                    </tr>
-                                </tfoot>
-                            -->
 
                             <tfoot>
                                 <tr>
@@ -160,8 +139,14 @@
                     <button type="submit" class="btn_payment">AmazonPayでお支払い</button>
                 </form>
 
+                <!--
                 <form action="{{ route('cart.square-payment') }}" method="POST" class="d-inline">
                     @csrf
+                    <button type="submit" class="btn_payment">Squareでお支払い</button>
+                </form>
+                -->
+
+                <form action="{{ route('square.checkout') }}" method="GET" class="d-inline">
                     <button type="submit" class="btn_payment">Squareでお支払い</button>
                 </form>
 
