@@ -1,12 +1,12 @@
 <header class="header">
     <nav class="nav-container">
         <div class="logo">
-            <a href="{{ asset('/') }}">
+            <a href="https://www.ccmedico.com/">
                 <img src="{{ asset('storage/images/processed/logo.png') }}" alt="ccmedico">
             </a>
         </div>
         <ul class="nav-menu" id="navMenu">
-            <li><a href="https://www.ccmedico.com/">CCM</a></li>
+            <li><a href="{{ asset('/') }}">CCM</a></li>
             <li><a href="{{ asset('product/airstocking') }}">エアストッキング&reg;</a></li>
             <li><a href="{{ asset('product/gelnail') }}">3in1&reg;ジェルネイル</a></li>
             <li><a href="{{ asset('product/wax') }}">美脚脱毛</a></li>

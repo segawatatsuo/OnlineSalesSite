@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'トップページ')
+@section('title', 'ご注文内容の確認')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/kakunin-page.css') }}">

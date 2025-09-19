@@ -24,7 +24,9 @@
     @include('partials.header')
 
     {{-- コンテンツ --}}
-    @yield('content')
+ <div class="content-wrapper">
+        @yield('content')
+    </div>
 
     {{-- フッター --}}
     @include('partials.footer')

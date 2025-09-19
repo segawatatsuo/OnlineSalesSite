@@ -14,15 +14,13 @@ class ProductJaController extends Controller
     {
         $products = ProductJa::with('category')->get();
 
-
         if ($products->isEmpty()) {
-            abort(404); // ← ここで落ちる可能性あり
+            abort(404);
         }
         $user = auth()->user();
 
         return view('products.index', compact('products', 'user'));
     }
-
 
 
     public function category($category)
@@ -87,24 +85,6 @@ class ProductJaController extends Controller
     }
 
 
-
-    /*
-    public function show($category, $id)
-    {
-
-        $product = ProductJa::with(['category', 'mainImage', 'subImages'])
-            ->where('id', $id)
-            ->whereHas('category', function ($query) use ($category) {
-                $query->where('brand', $category);
-            })
-            ->firstOrFail();
-
-        $user = auth()->user();
-
-
-        return view('products.show', compact('product', 'user'));
-    }
-        */
 
     public function show($category, $id)
     {

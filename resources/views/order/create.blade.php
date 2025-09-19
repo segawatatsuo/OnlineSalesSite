@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'トップページ')
+@section('title', '注文者情報入力')
 
 @push('styles')
     {{-- _responsive.cssは本当は共通CSSだがtop-page.cssの後に読み込まないと崩れるため --}}
@@ -36,9 +36,8 @@
 @section('content')
 
     <main class="container">
-        {{-- ここがメインのフォームタグになります --}}
         <form method="POST" action="{{ route('order.confirm') }}" class="post-content">
-            @csrf {{-- CSRFトークンは外側のフォームに含めます --}}
+            @csrf 
 
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -50,8 +49,7 @@
                 </div>
             @endif
 
-            {{-- 元々内側にあったmainタグの中身をこちらに移動 --}}
-            <main class="main"> {{-- このmainタグはcontainerクラスのmainタグと重複しますが、意味合いが異なるなら許容できます。必要なければ削除してもOKです。 --}}
+            <main class="main"> 
                 <h1>注文者情報入力</h1>
                 <div class="h-adr">
                     <span class="p-country-name" style="display:none;">Japan</span>
@@ -138,16 +136,6 @@
                         お届け先は注文者と同じですか？
                     </dt>
                     <dd>
-                        {{--
-                        <label style="font-size: 1.1em;">
-                            <input type="hidden" name="same_as_orderer" value="0">
-                            <input type="checkbox"
-                                id="same_as_orderer" 
-                                name="same_as_orderer" 
-                                value="1" checked>
-                                はい（チェックを外すと別の住所を入力できます）
-                        </label>
-                        --}}
 
                         <label style="font-size: 1.1em;">
                             <input type="hidden" name="same_as_orderer" value="0">

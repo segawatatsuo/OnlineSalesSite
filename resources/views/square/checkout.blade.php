@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'カード決済')
+@section('title', 'squareカード決済')
 
 @section('head')
     <meta name="csrf-token" content="{{ csrf_token() }}">

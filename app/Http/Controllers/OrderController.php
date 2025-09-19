@@ -3,27 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Customer;
 use App\Models\Delivery;
-use App\Http\Requests\OrderCustomerRequest; // 作成したリクエストクラスをuseする
-use Illuminate\Support\Facades\Auth;
+use App\Models\DeliveryTime;
+use App\Models\ShippingFee;
 
-use Illuminate\Support\Facades\Mail;
-use App\Mail\OrderThanksMail;
 use App\Services\CartService;
 use App\Services\ShippingFeeService;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
-
+use App\Mail\OrderThanksMail;
 use App\Mail\OrderConfirmed;
 use App\Mail\OrderNotification;
-use App\Models\DeliveryTime; // 追加
-use App\Models\ShippingFee;
+
+use App\Http\Requests\OrderCustomerRequest; // リクエストクラス
+
 
 
 class OrderController extends Controller
@@ -142,6 +143,7 @@ class OrderController extends Controller
         return view('order.confirm', compact('getCartItems', 'validatedData'));
     }
 
+    /*
     public function hoge(Request $request)
     {
         $address = Session::get('address');
@@ -270,6 +272,9 @@ class OrderController extends Controller
         // 注文完了画面にリダイレクト
         return redirect()->route('order.complete')->with('success', '注文が完了しました。');
     }
+
+*/
+
     // 注文番号の生成（例: ORD202505300001） モデルに移行
     /*
     private function generateOrderNumber()

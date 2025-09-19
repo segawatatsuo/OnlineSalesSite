@@ -1,9 +1,8 @@
 @extends('layouts.app')
 
-@section('title', '商品詳細')
+@section('title', '商品詳細 | '.$product->product_code)
 
 @push('styles')
-    {{-- _responsive.cssは本当は共通CSSだがtop-page.cssの後に読み込まないと崩れるため --}}
     <link rel="stylesheet" href="{{ asset('css/detail-page.css') }}">
     <link rel="stylesheet" href="{{ asset('css/_responsive.css') }}">
 @endpush
@@ -95,4 +94,29 @@
             <img class="modal-image" id="modalImage" src="" alt="">
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        function openModal(element) {
+            const modal = document.getElementById("imageModal");
+            const modalImg = document.getElementById("modalImage");
+            const img = element.querySelector("img"); // サムネ or メイン画像
+            modal.style.display = "block";
+            modalImg.src = img.src;
+        }
+
+        function closeModal() {
+            document.getElementById("imageModal").style.display = "none";
+        }
+
+        // モーダル背景クリックでも閉じられるように
+        window.onclick = function(event) {
+            const modal = document.getElementById("imageModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+@endpush
+
 @endsection

@@ -26,7 +26,7 @@
         .social-icon {
             width: 50px;
             height: 50px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -37,28 +37,35 @@
         }
 
         .social-icon:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             transform: translateY(-5px);
         }
 
 
-.social-icons {
-    display: flex;               /* 横並びにする */
-    gap: 28px;                   /* アイコン間の余白 */
-    justify-content: center;     /* 中央揃え（任意） */
-    margin: 20px 0;
-}
+        .social-icons {
+            display: flex;
+            /* 横並びにする */
+            gap: 28px;
+            /* アイコン間の余白 */
+            justify-content: center;
+            /* 中央揃え（任意） */
+            margin: 20px 0;
+        }
 
-.social-icons a {
-    text-decoration: none;
-    color: #333;                /* アイコン色 */
-    font-size: 24px;            /* アイコンサイズ */
-    transition: color 0.3s;     /* ホバー時の色変化にスムーズな動き */
-}
+        .social-icons a {
+            text-decoration: none;
+            color: #333;
+            /* アイコン色 */
+            font-size: 24px;
+            /* アイコンサイズ */
+            transition: color 0.3s;
+            /* ホバー時の色変化にスムーズな動き */
+        }
 
-.social-icons a:hover {
-    color: #007bff;             /* ホバー時の色 */
-}
+        .social-icons a:hover {
+            color: #007bff;
+            /* ホバー時の色 */
+        }
 
 
         .footer-links {
@@ -100,9 +107,27 @@
             font-size: 0.7rem;
             /*color: rgba(255,255,255,0.5);*/
             color: gray;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 20px;
         }
 
 
+        /*フッターを最下部に配置*/
+        /* 画面全体を基準にする */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
 
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* 画面全体を基準にする */
+        }
+
+        .content-wrapper {
+            flex: 1;
+            /* ここが空きスペースを埋める */
+        }

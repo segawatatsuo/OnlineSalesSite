@@ -61,6 +61,7 @@ class CartController extends Controller
     }
 
     //AmazonPay用
+    /*
     public function show()
     {
         try {
@@ -114,4 +115,5 @@ class CartController extends Controller
     {
         return view('cart.which-payment-service');
     }
+        */
 }

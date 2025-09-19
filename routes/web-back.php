@@ -2,42 +2,49 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Auth\Events\Registered;
-use App\Admin\Controllers\MailPreviewController;
-use App\Http\Controllers\Admin\AdminLoginController;
+
 use App\Http\Controllers\ProductJaController;
 use App\Http\Controllers\ProductImageJaController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MypageController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\AdminRegisterController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\AmazonPayTestController;
 use App\Http\Controllers\AmazonPayController;
-use App\Http\Controllers\SquarePaymentController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\CustomRegisterController;
+use App\Http\Controllers\Auth\CustomRegisterController; // ここは残します
 use App\Http\Controllers\Auth\CorporateRegisterController;
-use App\Http\Controllers\Auth\VerificationController;
-use App\Http\Controllers\PageController;
-use App\Models\Order;
-use App\Models\User;
 use PhpParser\Node\Stmt\Return_;
+use App\Http\Controllers\Auth\VerificationController;
+use App\Models\Order;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+
+use Illuminate\Support\Facades\Session;
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+
+use App\Admin\Controllers\MailPreviewController;
+
 use Square\Environments;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\SquarePaymentController;
 
+// ホーム → 商品一覧にリダイレクト
+//Route::get('/', fn() => redirect('/products'));
 
-// トップページ
+// トップページに index.blade.php を表示
 Route::get('/', function () {
-    return view('index');
+    return view('index'); // resources/views/index.blade.php
 })->name('products.index');
 
-// 法人会員ログイン
-Route::get('admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+// 管理者ログイン
+Route::get('admin/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+Route::post('admin/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'login']);
 
-// 商品（カテゴリ別トップページと詳細ページ）
+// 商品（カテゴリ別一覧と詳細）
 Route::prefix('product')->name('product.')->group(function () {
     // カテゴリ別商品一覧
     Route::get('{category}', [ProductJaController::class, 'category'])->name('category');
@@ -51,6 +58,16 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::post('add', [CartController::class, 'add'])->name('add');
     Route::post('update', [CartController::class, 'update'])->name('update');
     Route::post('remove', [CartController::class, 'remove'])->name('remove');
+
+    // Amazon Pay
+    Route::get('show', [CartController::class, 'show'])->name('show');
+    Route::post('checkout-session', [CartController::class, 'createCheckoutSession'])->name('checkout-session');
+    Route::get('complete', [CartController::class, 'review'])->name('amazonpay.review');
+
+    //Squareのカード入力画面
+    Route::post('square-payment', [CartController::class, 'squarePayment'])->name('square-payment');
+
+    Route::get('which-payment', [CartController::class, 'whichPayment'])->name('which-payment');
 });
 
 // 注文
@@ -59,6 +76,8 @@ Route::prefix('order')->name('order.')->group(function () {
     Route::post('confirm', [OrderController::class, 'confirm'])->name('confirm');
     Route::post('storeOrder', [OrderController::class, 'storeOrder'])->name('storeOrder'); //store
     Route::get('complete', [OrderController::class, 'complete'])->name('complete');
+    Route::post('hoge', [OrderController::class, 'hoge'])->name('hoge');
+
     Route::get('modify/{type}', [OrderController::class, 'modify'])->name('modify');
 });
 
@@ -120,6 +139,14 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
 // ホーム画面（ログイン後のリダイレクト用）
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+//Square
+Route::post('/process-payment', [PaymentController::class, 'processPayment']);
+
+//AmazonPayのSDKハ゛ーシ゛ョン取得
+Route::get('/amazonpay/version', [AmazonPayTestController::class, 'version']);
+Route::get('/amazonpay/start', [AmazonPayController::class, 'redirectToAmazonPay'])->name('amazonpay.start');
+Route::get('/amazonpay/return', [AmazonPayController::class, 'handleReturn'])->name('amazonpay.return');
+
 // Laravel-Adminのルーティング
 Encore\Admin\Facades\Admin::routes();
 
@@ -173,6 +200,10 @@ Route::post('/corporate/resend-verification', function () {
     return back()->withErrors(['error' => 'メール再送信に失敗しました。']);
 })->name('corporate.verification.resend');
 
+
+Route::get('/top', function () {
+    return view('top');
+});
 
 
 //プライバシーポリシー
@@ -230,4 +261,11 @@ Route::middleware(['admin.auth'])->group(function () {
     Route::get('admin/mail-preview-template/{orderId}', [MailPreviewController::class, 'previewTemplate'])
         ->name('admin.mail-preview-template')
         ->where('orderId', '[0-9]+'); // 数字のみ許可
+});
+
+
+Route::get('/debug-square', function () {
+    $service = new App\Services\SquareService();
+    $debug = $service->debugClientStructure();
+    return response()->json($debug, 200, [], JSON_PRETTY_PRINT);
 });
