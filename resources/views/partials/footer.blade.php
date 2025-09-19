@@ -1,10 +1,11 @@
 <footer class="footer">
     <div class="footer-content">
         <div class="social-icons">
-            <a href="#"><i class="fa fa-facebook"></i></a>
-            <a href="#"><i class="fa fa-instagram"></i></a>
-            <a href="#"><i class="fa fa-youtube"></i></a>
-            <a href="#"><i class="fa fa-twitter"></i></a>
+
+            <a href="{{ $footerData['facebook'] ?? '#' }}"><i class="fa fa-facebook"></i></a>
+            <a href="{{ $footerData['Instagram'] ?? '#' }}"><i class="fa fa-instagram"></i></a>
+            <a href="{{ $footerData['youtube'] ?? '#' }}"><i class="fa fa-youtube"></i></a>
+            <a href="{{ $footerData['twitter'] ?? '#' }}"><i class="fa fa-twitter"></i></a>
         </div>
 
         <div class="footer-links">

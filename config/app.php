@@ -54,7 +54,7 @@ return [
 
     //'url' => env('APP_URL', 'http://localhost'),
     //'url' => env('APP_URL', 'https://e8bb-220-148-127-103.ngrok-free.app/'),
-    'url' => env('APP_URL', 'https://shop.ccmedico.dev'),
+    'url' => env('APP_URL', 'https://shop.ccmedico.dev.local'),
 
     'asset_url' => env('ASSET_URL', null),
 

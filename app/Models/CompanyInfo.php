@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+
 class CompanyInfo extends Model
 {
     use HasFactory;
@@ -35,7 +36,7 @@ class CompanyInfo extends Model
      */
     public static function getFooterData()
     {
-        $keys = ['company-zip', 'company-address', 'company-tel', 'company-fax', 'Copyright'];
+        $keys = ['company-zip', 'company-address', 'company-tel', 'company-fax', 'Copyright', 'facebook', 'Instagram', 'Twitter', 'Youtube'];
         $companyData = self::getValues($keys);
 
         // footer-address: 郵便番号 + 住所
@@ -51,10 +52,20 @@ class CompanyInfo extends Model
         if ($fax) $contact[] = 'FAX: ' . $fax;
         $footerContact = implode(' / ', $contact);
 
+        //SNS
+        $facebook = $companyData['facebook'] ?? '';
+        $Instagram = $companyData['Instagram'] ?? '';
+        $Twitter = $companyData['Twitter'] ?? '';
+        $Youtube = $companyData['Youtube'] ?? '';
+
         return [
             'footer-address' => $footerAddress,
             'footer-contact' => $footerContact,
-            'footer-copyright' => $companyData['Copyright'] ?? ''
+            'footer-copyright' => $companyData['Copyright'] ?? '',
+            'facebook' => $facebook,
+            'Instagram' => $Instagram,
+            'Twitter' => $Twitter,
+            'Youtube' => $Youtube
         ];
     }
 
