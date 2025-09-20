@@ -9,27 +9,48 @@
 @endsection
 
 @push('styles')
-    {{-- _responsive.cssは本当は共通CSSだがtop-page.cssの後に読み込まないと崩れるため --}}
+        <link rel="stylesheet" href="{{ asset('css/square.css') }}">
     <link rel="stylesheet" href="{{ asset('css/kakunin-page.css') }}">
     <link rel="stylesheet" href="{{ asset('css/_responsive.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/square.css') }}">
 
 @endpush
 
 @section('content')
 
+
 <main class="main">
     <div class="container">
         <h2 class="section-title">お支払いフォーム</h2>
         <p>お支払い金額：<span id="display-amount">{{ number_format($totalAmount) }}</span>円</p>
+        
+        <!-- Squareのカード入力欄 -->
         <div id="card-container"></div>
+        
+        <!-- 支払いボタン -->
         <button id="card-button" class="pay-button">支払う</button>
+        
+        <!-- カードブランドアイコン -->
+        <div class="card-brands">
+            <img src="{{ asset('/images/card/visa.png') }}" alt="Visa">
+            <img src="{{ asset('/images/card/master.png') }}" alt="Mastercard">
+            <img src="{{ asset('/images/card/amex.png') }}" alt="Amex">
+            <img src="{{ asset('/images/card/jcb.png') }}" alt="JCB">
+        </div>
+
+        <div style="margin-top: 10px">
+            <a href="https://squareup.com/jp/ja" target="_blank">
+                当店はSquareオンライン決済を利用しています
+            </a>
+        </div>
+    </div>
+</main>
+
 
 <!-- オーバーレイ -->
 <div id="loading-overlay"
      style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
             background:rgba(255,255,255,0.9); justify-content:center; align-items:center;
-            z-index:1000; flex-direction:column;">
+            z-index:1000; flex-direction:column;">  
   <div class="spinner"
        style="border:6px solid #f3f3f3; border-top:6px solid #3498db;
               border-radius:50%; width:60px; height:60px;
@@ -45,10 +66,7 @@
 }
 </style>
 
-        <div style="margin-top: 10px"><a href="https://squareup.com/jp/ja" target="_blank">当店はSquareオンライン決済を利用しています</a></div>
-        <div style="margin-top: 10px"><img style="max-width: 400px" src="{{ asset('/images/card/PayPay_digital_logo_download_0818-04.png') }}"></div>
-    </div>
-</main>
+
 <div id="messages" style="margin-top: 20px;"></div>
 
 

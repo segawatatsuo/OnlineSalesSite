@@ -6,7 +6,6 @@
             min-height: 80vh;
             padding: 2rem;
             background-color: #f9f9f9;
-            /* 背景色（お好みで） */
         }
 
         main.main form {
@@ -133,4 +132,68 @@
             height: 100%;
             background: rgba(255, 255, 255, 0.8);
             z-index: 1000;
+        }
+
+
+
+
+
+
+
+
+
+
+        .container {
+            max-width: 480px;
+            /* PCでの最大幅 */
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #card-container {
+            width: 100%;
+            min-height: 45px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px;
+            background: #fff;
+            box-sizing: border-box;
+        }
+
+        .pay-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            /*color: #fff;*/
+            color: #0f1111;
+            /*background-color: #006aff;*/
+            background-color: #FFD814;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color .3s;
+        }
+
+        .pay-button:hover {
+            /*background-color: #0051c7;*/
+            background: #F7CA00;
+        }
+
+        .card-brands {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            /* スマホで折り返し */
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .card-brands img {
+            height: 32px;
+            /* 高さ統一 */
+            object-fit: contain;
         }
