@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -10,19 +11,31 @@ body {
     min-height: 100vh;
 }
 
+/*
 main.main {
     flex: 1;
     display: flex;
-    justify-content: center; /* 水平方向の中央 */
-    align-items: center;     /* 垂直方向の中央 */
+    justify-content: center; //水平方向の中央
+    align-items: center;     // 垂直方向の中央 
     text-align: center;
 }
+*/
+main.main {
+    flex: 1;
+    display: block;
+    /* ← flexをやめて通常のブロックに */
+    text-align: center;
+    padding: 80px 20px 100px;
+    /* 上下余白を確保 */
+}
+
 
 @media (max-width: 768px) {
     h1 {
         padding-top: 80px;
         font-size: 22px;
     }
+
     main.main {
         padding: 0 20px;
     }

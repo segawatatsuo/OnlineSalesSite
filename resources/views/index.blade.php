@@ -3,8 +3,6 @@
 @section('title', 'ccmedico shop')
 
 @push('styles')
-    {{-- _responsive.cssは本当は共通CSSだがtop-page.cssの後に読み込まないと崩れるため --}}
-
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/_responsive.css') }}">
 @endpush
@@ -12,7 +10,6 @@
 
 
 @section('content')
-
 
     <main class="main">
         <div class="line-up">

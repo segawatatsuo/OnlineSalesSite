@@ -1,7 +1,9 @@
 /* メイン部分の余白を確保（上下のヘッダー・フッターと干渉しないように） */
 .main {
-  max-width: 600px;          /* PC時の横幅制限 */
-  margin: 80px auto 100px;   /* 上下に余白、左右中央寄せ */
+  max-width: 600px;
+  /* PC時の横幅制限 */
+  margin: 80px auto 100px;
+  /* 上下に余白、左右中央寄せ */
   padding: 20px;
   box-sizing: border-box;
 }
@@ -53,7 +55,8 @@
 /* ===== スマホ対応 ===== */
 @media (max-width: 600px) {
   .main {
-    margin: 60px 15px 80px;  /* 左右に少し余白を追加 */
+    margin: 60px 15px 80px;
+    /* 左右に少し余白を追加 */
     padding: 15px;
   }
 
@@ -71,5 +74,83 @@
 
   .main p {
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  #AmazonPayButton {
+    margin-top: 40px;
+    /* ボタンの上の余白 */
+    margin-bottom: 50px;
+    /* ボタン下の余白を追加 */
+  }
+}
+
+/* ===== Amazon Pay ボタン 共通 ===== */
+/* ラッパーは中央寄せ */
+
+/* Amazon Pay ボタンのコンテナ */
+
+/*
+#AmazonPayButton {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+#AmazonPayButton {
+  width: 250px;
+  margin: 30px auto 20px;
+}
+
+
+@media (max-width: 600px) {
+  #AmazonPayButton {
+    width: 90%;
+    max-width: 250px;
+    margin: 40px auto 50px;
+  }
+}
+
+
+@media (max-width: 600px) {
+  #AmazonPayButton>div {
+    width: 80% !important;
+    max-width: 250px !important;
+  }
+
+  #AmazonPayButton {
+    margin-top: 40px;
+    margin-bottom: 50px;
+  }
+}
+*/
+
+
+#AmazonPayButton {
+  width: 250px;
+  margin: 30px auto 20px;
+  height: 60px;
+  /* 好みの高さに調整（デフォルトより大きく） */
+}
+
+/* Amazon Payが生成するdivとiframeも高さを合わせる */
+#AmazonPayButton>div {
+  height: 100% !important;
+}
+
+#AmazonPayButton iframe {
+  height: 100% !important;
+}
+
+/* スマホ対応 */
+@media (max-width: 600px) {
+  #AmazonPayButton {
+    width: 90%;
+    max-width: 250px;
+    height: 55px;
+    /* スマホでは少し小さめに */
+    margin: 40px auto 50px;
   }
 }

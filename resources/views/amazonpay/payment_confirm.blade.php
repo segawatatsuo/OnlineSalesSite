@@ -4,14 +4,16 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/complete.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/amazonpay_payment_confirm.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/amazon_payment_confirm.css') }}">
     <link rel="stylesheet" href="{{ asset('css/_responsive.css') }}">
 @endpush
 
 @section('content')
 
-    <main class="main">
-        <div style="display: block;">
+        <main class="main">
+
+        <div class="container">
+
             <h1>Amazon Pay 決済確認</h1>
 
             @if (session('error'))
@@ -33,7 +35,6 @@
 
             <div id="AmazonPayButton"></div>
 
-
         </div>
     </main>
 
@@ -47,6 +48,7 @@
             productType: 'PayOnly',
             placement: 'Cart',
             buttonColor: 'Gold',
+            buttonSize: 'small',   // または 'medium', 'large'
             createCheckoutSessionConfig: {
                 payloadJSON: '{!! $payloadJson !!}',
                 signature: '{{ $signature }}',

@@ -24,7 +24,7 @@
     @include('partials.header')
 
     {{-- コンテンツ --}}
- <div class="content-wrapper">
+    <div class="content-wrapper">
         @yield('content')
     </div>
 
@@ -34,7 +34,7 @@
     {{-- スクリプト --}}
     <script src="{{ asset('js/script.js') }}"></script>
 
-    <!-- bladeに書かれたJavaScriptの読み込み位置（通常はbodyの最後に） -->
+    <!-- bladeに書かれたJavaScriptの読み込み位置 -->
     @stack('scripts')
 </body>
 

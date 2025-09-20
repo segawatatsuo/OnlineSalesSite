@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\CompanyInfo;
 use Illuminate\Support\Facades\Cache;
 
+use Illuminate\Support\Facades\Blade;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
