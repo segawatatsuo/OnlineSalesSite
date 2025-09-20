@@ -1,0 +1,88 @@
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.cart-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.item-name {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.item-price,
+.item-subtotal {
+    margin-bottom: 0.5rem;
+}
+
+.quantity-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.quantity-input {
+    width: 70px;
+    padding: 4px;
+}
+
+.update-btn,
+.delete-btn,
+.continue-shopping,
+.checkout-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.update-btn {
+    background: #007bff;
+    color: #fff;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: #fff;
+}
+
+.continue-shopping {
+    background: #6c757d;
+    color: #fff;
+}
+
+.checkout-btn {
+    background: #28a745;
+    color: #fff;
+}
+
+.cart-total {
+    font-size: 1.2rem;
+    margin: 1.5rem 0;
+}
+
+.cart-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* --- スマホ用 --- */
+@media (max-width: 600px) {
+    .quantity-form {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .update-btn {
+        width: 100%;
+    }
+}
