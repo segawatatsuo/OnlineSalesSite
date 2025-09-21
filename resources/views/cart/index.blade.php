@@ -8,9 +8,7 @@
     <style>
         /* === 共通 === */
         .update-btn,
-        .delete-btn,
-        .checkout-btn,
-        .continue-shopping {
+        .delete-btn,{
             border: none;
             border-radius: 4px;
             /*padding: 6px 14px;*/
@@ -19,6 +17,18 @@
             font-size: 14px;
             transition: 0.2s;
         }
+
+        .checkout-btn,
+        .continue-shopping {
+            border: none;
+            border-radius: 12px;
+            /*padding: 6px 14px;*/
+            padding: 16px 32px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
 
         .update-btn {
             background: #0d6efd;
