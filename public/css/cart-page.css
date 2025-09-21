@@ -40,8 +40,9 @@ body {
 .cart-table {
     width: 100%;
     background: white;
-    border-radius: 16px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    /*border-radius: 16px;*/
+    border-radius: 6px;
+    /*box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);*/
     overflow: hidden;
     margin-bottom: 40px;
 }
@@ -58,12 +59,14 @@ body {
     text-align: left;
     font-weight: 600;
     font-size: 1rem;
-    border-bottom: 1px solid #e0e0e0;
+    /*border-bottom: 1px solid #e0e0e0;*/
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .cart-table td {
     padding: 20px;
-    border-bottom: 1px solid #f0f0f0;
+    /*border-bottom: 1px solid #f0f0f0;*/
+    border-bottom: 1px solid #e5e5e5;
     vertical-align: middle;
 }
 
@@ -144,11 +147,13 @@ body {
 /* 合計 */
 .cart-total {
     background: white;
-    border-radius: 16px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    /*border-radius: 16px;*/
+    border-radius: 6px;
+    /*box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);*/
     padding: 30px;
     margin-bottom: 40px;
     text-align: center;
+    border: 1px solid #e5e5e5;
 }
 
 .cart-total h4 {

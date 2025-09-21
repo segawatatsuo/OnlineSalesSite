@@ -61,13 +61,15 @@
             width: 100%;
             border-collapse: collapse;
             background: #fff;
-            border: 1px solid #e0e0e0;
+            /*border: 1px solid #e0e0e0;*/
+            border: 1px solid #e5e5e5;
         }
         .cart-table th,
         .cart-table td {
             padding: 12px;
             text-align: center;
-            border-bottom: 1px solid #e0e0e0;
+            /*border-bottom: 1px solid #e0e0e0;*/
+            border-bottom: 1px solid #e5e5e5;
         }
         .cart-table thead {
             background: #f9f9f9;
@@ -90,7 +92,8 @@
             }
             .cart-card {
                 background: #fff;
-                border: 1px solid #e0e0e0;
+                /*border: 1px solid #e0e0e0;*/
+                border: 1px solid #e5e5e5;
                 border-radius: 6px;
                 padding: 12px;
                 margin-bottom: 12px;

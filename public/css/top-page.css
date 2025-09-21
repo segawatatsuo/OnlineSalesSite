@@ -294,13 +294,16 @@
 
 .product-card {
     background: white;
-
+    /*
     border-radius: 20px;
+    */
+    border-radius: 6px;
     padding: 20px;
     /*
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            */
     border: 2px solid rgba(102, 126, 234, 0.1);
+    */
+    border: 1px solid #e5e5e5;
+
     text-align: center;
     display: flex;
     flex-direction: column;

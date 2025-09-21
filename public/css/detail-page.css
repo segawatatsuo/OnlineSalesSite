@@ -131,8 +131,9 @@
 .product-price {
     font-size: 2rem;
     /* 価格のフォントサイズ */
-    font-weight: 700;
-    color: #e44d26;
+    font-weight: 500;
+    /*color: #e44d26;*/
+    color: #000;
     /* 価格の色 */
     margin-top: 10px;
     /* 上の要素との間隔を追加 */
@@ -185,10 +186,12 @@
 .purchase-section {
     background: white;
     padding: 30px;
-    border-radius: 20px;
+    /*border-radius: 20px;*/
+    border-radius: 6px;
     /*box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);*/
     margin-bottom: 40px;
-    border: 2px solid rgba(102, 126, 234, 0.1);
+    /*border: 2px solid rgba(102, 126, 234, 0.1);*/
+    border: 1px solid #e5e5e5;
 }
 
 .quantity-section {
@@ -317,10 +320,10 @@
 }
 
 @media (max-width: 768px) {
-        .product-image-cut img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            border-radius: 15px;
-        }
+    .product-image-cut img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-radius: 15px;
     }
+}
