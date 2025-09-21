@@ -112,7 +112,7 @@
 
                                 <!-- 価格とフォーム部分を下揃えにするためのラッパー -->
                                 <div class="product-bottom">
-                                    <div class="product-price">￥{{ number_format($product->price) }}</div>
+                                    <div class="product-price">￥{{ number_format($product->price) }} (税込)</div>
                                     <form method="POST" action="{{ route('cart.add') }}">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -145,7 +145,7 @@
 
                                 <!-- 価格とフォーム部分を下揃えにするためのラッパー -->
                                 <div class="product-bottom">
-                                    <div class="product-price">￥{{ number_format($product->price) }}</div>
+                                    <div class="product-price">￥{{ number_format($product->price) }} (税込)</div>
                                     <form method="POST" action="{{ route('cart.add') }}">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">

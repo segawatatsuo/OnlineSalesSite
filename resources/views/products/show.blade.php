@@ -58,7 +58,7 @@
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                     <div class="purchase-section">
                         <p>{{ optional($product)->product_code}} {{ optional($product)->name }}</p>
-                        <p class="product-price">&yen;{{ number_format(optional($product)->price) }}</p>
+                        <p class="product-price">&yen;{{ number_format(optional($product)->price) }} (税込)</p>
                         <div class="quantity-section">
                             <label class="quantity-label">数量:</label>
                             <input type="number" class="quantity-input" value="1" min="1" name="quantity" >

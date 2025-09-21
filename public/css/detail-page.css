@@ -129,9 +129,9 @@
 }
 
 .product-price {
-    font-size: 2rem;
+    font-size: 1.4rem;
     /* 価格のフォントサイズ */
-    font-weight: 500;
+
     /*color: #e44d26;*/
     color: #000;
     /* 価格の色 */
@@ -149,6 +149,8 @@
     margin-left: 8px;
     /* 価格との間隔 */
 }
+
+
 
 .product-image-cut {
     width: 100%;

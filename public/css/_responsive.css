@@ -590,6 +590,12 @@
         /* 商品詳細ページのみ大きく */
     }
 
+    @media (max-width: 768px) {
+        .product-info .product-price {
+            font-size: 1rem;
+        }
+    }
+
     /* 以下、既存のスタイルは変更なし */
     .thumbnail-grid {
         grid-template-columns: repeat(3, 1fr);

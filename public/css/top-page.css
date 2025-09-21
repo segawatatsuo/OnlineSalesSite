@@ -237,8 +237,10 @@
 }
 
 .product-price {
+    /*
     font-size: 1.1rem;
     font-weight: 700;
+    */
     /*color: #667eea;*/
     color: #0f1111;
     margin-bottom: 15px;
@@ -358,8 +360,10 @@
 }
 
 .product-price {
+    /*
     font-size: 1.1rem;
     font-weight: 700;
+    */
     color: #0f1111;
     margin-bottom: 15px;
 }
