@@ -157,8 +157,6 @@
                         @endforeach
                     </div>
                 </div>
-
-
             </div>
         </section>
     @else

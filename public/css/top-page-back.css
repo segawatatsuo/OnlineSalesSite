@@ -244,7 +244,6 @@
     margin-bottom: 15px;
 }
 
-/*
 .quantity-input {
     width: 60px;
     padding: 8px;
@@ -259,7 +258,7 @@
     outline: none;
     border-color: #667eea;
 }
-*/
+
 .add-to-cart {
     width: 100%;
     padding: 12px;
@@ -361,7 +360,6 @@
     margin-bottom: 15px;
 }
 
-/*
 .quantity-input {
     width: 60px;
     padding: 8px;
@@ -370,32 +368,6 @@
     text-align: center;
     margin-bottom: 15px;
     transition: border-color 0.3s ease;
-}
-*/
-
-/* PC版での quantity-input 修正（top-page.css に追加または既存を置き換え） */
-.quantity-input {
-    width: 60px;
-    padding: 8px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    text-align: center;
-    margin: 0 auto 15px auto;
-    /* 中央揃えに変更 */
-    display: block;
-    /* ブロック要素にして中央揃えを確実に */
-    transition: border-color 0.3s ease;
-
-    /* PC版での文字中央配置を改善 */
-    line-height: 1.2;
-    /* 行の高さを調整 */
-    font-size: 0.9rem;
-    /* フォントサイズを少し調整 */
-    padding-left: 8px;
-    /* 左右のパディングを統一 */
-    padding-right: 8px;
-    box-sizing: border-box;
-    /* パディングを含めてボックスサイズを計算 */
 }
 
 .quantity-input:focus {

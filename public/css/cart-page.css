@@ -291,3 +291,60 @@ body {
         font-size: 13px;
     }
 }
+
+
+/*------------------------------------------------*/
+
+
+.continue-shopping {
+    background: white;
+    color: #0f1111;
+    border: 1px solid #9fbdd8;
+}
+
+.continue-shopping,
+.checkout-btn {
+    flex: 1;
+    padding: 16px 32px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/*------------------------------------------------*/
+
+
+checkout-btn:hover {
+    background-color: #F7CA00;
+}
+
+.checkout-btn {
+    /* background: linear-gradient(135deg, #5e6d8a 0%, #4a546e 100%); */
+    background-color: #FFD814;
+    /* color: white; */
+    color: #0f1111;
+}
+
+.continue-shopping,
+.checkout-btn {
+    flex: 1;
+    padding: 16px 32px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

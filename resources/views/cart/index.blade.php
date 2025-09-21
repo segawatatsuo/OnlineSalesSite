@@ -13,7 +13,8 @@
         .continue-shopping {
             border: none;
             border-radius: 4px;
-            padding: 6px 14px;
+            /*padding: 6px 14px;*/
+            padding: 16px 32px;
             cursor: pointer;
             font-size: 14px;
             transition: 0.2s;
@@ -45,11 +46,11 @@
         }
 
         .checkout-btn {
-            background: #198754;
-            color: #fff;
+            /*background: #198754;
+            color: #fff;*/
         }
         .checkout-btn:hover {
-            background: #157347;
+            /*background: #157347;*/
         }
 
         /* === PC版：テーブル === */
