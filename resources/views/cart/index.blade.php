@@ -25,8 +25,10 @@
             /*padding: 6px 14px;*/
             padding: 16px 32px;
             cursor: pointer;
-            font-size: 14px;
+            /*font-size: 14px;*/
             transition: 0.2s;
+            font-weight: 600;
+            font-size: 1.1rem;
         }
 
 
