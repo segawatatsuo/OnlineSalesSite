@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'トップページ')
+@section('title', 'ご注文情報確認')
 
 @push('styles')
 
@@ -108,10 +108,6 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </span>
-
-
-
-
                 </div>
             </div>
 
@@ -154,43 +150,23 @@
                 <h2 class="order-total-title">合計金額</h2>
                 <div class="order-total-amount">&yen;{{ number_format($total ?? 0) }}</div>
             </div>
-
-        <!--
             <div class="button-area">
-                <a href="{{ route('cart.index') }}" class="btn btn-secondary">戻る</a>
-                <form action="{{ route('cart.square-payment') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="a-button" style="border: none">お支払い</button>
-                </form>
-            </div>
-        -->
-            <div class="button-area">
-
                 <a href="{{ route('cart.index') }}" class="btn_return">戻る</a>
-
                 <form action="{{ route('amazon-pay.create-session') }}" method="POST" class="d-inline">
                     @csrf
                     <input type="hidden" name="amount" value="{{ $getCartItems['subtotal'] + $getCartItems['shipping_fee'] }}">
                     <button type="submit" class="btn_payment">AmazonPayでお支払い</button>
                 </form>
-
                 <!--
                 <form action="{{ route('cart.square-payment') }}" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn_payment">Squareでお支払い</button>
                 </form>
                 -->
-
                 <form action="{{ route('square.checkout') }}" method="GET" class="d-inline">
                     <button type="submit" class="btn_payment">Squareでお支払い</button>
                 </form>
-
-
             </div>
-
-
-
-
         </div>
     </main>
 

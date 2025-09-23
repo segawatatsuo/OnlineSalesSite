@@ -9,6 +9,7 @@ return [
     |
     | This value is the name of laravel-admin, This setting is displayed on the
     | login page.
+    | この値はlaravel-adminの名前です。この設定はログインページに表示されます。
     |
     */
     'name' => 'CCM-admin',
@@ -20,6 +21,7 @@ return [
     |
     | The logo of all admin pages. You can also set it as an image by using a
     | `img` tag, eg '<img src="http://logo-url" alt="Admin logo">'.
+    | すべての管理ページのロゴです。`img` タグ（例: '<img src="http://logo-url" alt="Admin logo">'）を使用して画像として設定することもできます。
     |
     */
     'logo' => '<b>CCM</b> admin',
@@ -32,6 +34,8 @@ return [
     | The logo of all admin pages when the sidebar menu is collapsed. You can
     | also set it as an image by using a `img` tag, eg
     | '<img src="http://logo-url" alt="Admin logo">'.
+    | サイドバーメニューが折りたたまれているときの、すべての管理ページのロゴです。
+    | `img` タグ（例：'<img src="http://logo-url" alt="Admin logo">'）を使用して画像として設定することもできます。
     |
     */
     'logo-mini' => '<b>La</b>',
@@ -42,7 +46,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | This value is the path of laravel-admin bootstrap file.
-    |
+    | この値は、laravel-admin ブートストラップ ファイルのパスです。
     */
     'bootstrap' => app_path('Admin/bootstrap.php'),
 
@@ -54,6 +58,8 @@ return [
     | The routing configuration of the admin page, including the path prefix,
     | the controller namespace, and the default middleware. If you want to
     | access through the root path, just set the prefix to empty string.
+    | 管理ページのルーティング設定（パスプレフィックス、コントローラーの名前空間、デフォルトのミドルウェアを含む）。
+    | ルートパス経由でアクセスする場合は、プレフィックスを空文字列に設定してください。
     |
     */
     'route' => [
@@ -76,7 +82,8 @@ return [
     | The installation directory of the controller and routing configuration
     | files of the administration page. The default is `app/Admin`, which must
     | be set before running `artisan admin::install` to take effect.
-    |
+    | 管理ページのコントローラーとルーティング設定ファイルのインストールディレクトリ。
+    |デフォルトは `app/Admin` ですが、設定を有効にするには `artisan admin::install` を実行する前に設定する必要があります。
     */
     'directory' => app_path('Admin'),
 
@@ -86,7 +93,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Html title for all pages.
-    |
+    | すべてのページの HTML タイトル。
     */
     'title' => 'Admin',
 
@@ -96,7 +103,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | If your page is going to be accessed via https, set it to `true`.
-    |
+    | ページに https 経由でアクセスする場合は、これを `true` に設定します。
     */
     'https' => env('ADMIN_HTTPS', true),
 
@@ -109,6 +116,8 @@ return [
     | guard and a user provider setting of authentication driver.
     |
     | You can specify a controller for `login` `logout` and other auth routes.
+    | すべての管理ページの認証設定。認証ガードと認証ドライバーのユーザープロバイダー設定が含まれます。
+    |`login` `logout` などの認証ルートのコントローラーを指定できます。
     |
     */
     'auth' => [
@@ -151,6 +160,7 @@ return [
     |
     | File system configuration for form upload files and images, including
     | disk and upload path.
+    | ディスクとアップロード パスを含む、フォーム アップロード ファイルと画像のファイル システム構成。
     |
     */
     'upload' => [
@@ -178,7 +188,7 @@ return [
     */
     'database' => [
 
-        // Database connection for following tables.
+        // Database connection for following tables.次のテーブルへのデータベース接続。
         'connection' => '',
 
         // User tables and model.
@@ -429,12 +439,5 @@ return [
             'icon'  => 'fa-box',
             'uri'   => 'product-ja', // このURLが /admin/product-ja に対応している必要があります
         ],
-
-
-
     ],
-
-
-
-
 ];

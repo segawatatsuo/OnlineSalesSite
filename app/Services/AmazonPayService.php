@@ -11,7 +11,6 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Delivery;
 
-
 class AmazonPayService
 {
     protected $client;
@@ -170,7 +169,7 @@ class AmazonPayService
             );
 
             \Log::info('AmazonPay pendingPayment() 結果', ['raw' => $response]);
-            //dd(json_decode($response['response'], true));
+
 
             $checkoutSession = json_decode($response['response'], true);
             // 与信ID（後でキャプチャに必要）
@@ -185,6 +184,8 @@ class AmazonPayService
             if (empty($cart)) {
                 throw new \Exception('カート情報が空です。');
             }
+
+            $corporate_customer_id = session('corporate_customer_id', null);
 
             DB::beginTransaction();
 
@@ -232,6 +233,7 @@ class AmazonPayService
                 'amazon_chargePermissionId' => $chargePermissionId,
                 'amazon_chargeId' => $chargeId,
                 'status'         => Order::STATUS_AUTH, // 与信済
+                'corporate_customer_id'   => $corporate_customer_id,
             ]);
 
             // === 注文明細作成 ===

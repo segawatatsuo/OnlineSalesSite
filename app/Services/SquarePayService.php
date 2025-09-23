@@ -71,6 +71,8 @@ class SquarePayService
                 throw new \Exception('カート情報が空です。');
             }
 
+            $corporate_customer_id = session('corporate_customer_id', null);
+
             DB::beginTransaction();
 
             // === 顧客作成 ===
@@ -117,6 +119,7 @@ class SquarePayService
                 'amazon_chargePermissionId' => $chargePermissionId,
                 'amazon_chargeId' => $chargeId,
                 'status'         => Order::STATUS_AUTH, // 与信済
+                'corporate_customer_id'   => $corporate_customer_id,
             ]);
 
             // === 注文明細作成 ===

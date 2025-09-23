@@ -23,7 +23,8 @@ class Order extends Model
         'amazon_checkout_session_id',
         'square_payment_id',
         'amazon_chargePermissionId',
-        'amazon_chargeId'
+        'amazon_chargeId',
+        'corporate_customer_id'
     ];
 
     // ステータス定数

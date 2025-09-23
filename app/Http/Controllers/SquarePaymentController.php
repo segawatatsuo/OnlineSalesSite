@@ -105,6 +105,9 @@ class SquarePaymentController extends Controller
                 throw new \Exception('カート情報が空です。');
             }
 
+            $corporate_customer_id = session('corporate_customer_id', null);
+
+
             // ✅ 成功判定
             if ($response->getErrors() === null) {
                 $payment = $response->getPayment();
@@ -151,6 +154,7 @@ class SquarePaymentController extends Controller
                     'your_request'      => $address['your_request'] ?? null,
                     'square_payment_id' => $paymentId,
                     'status'            => Order::STATUS_AUTH, // 与信済
+                    'corporate_customer_id'   => $corporate_customer_id,
                 ]);
 
                 // === 注文明細作成 ===

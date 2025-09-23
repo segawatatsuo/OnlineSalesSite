@@ -71,8 +71,10 @@ class OrderController extends Controller
 
         if ($user && $user->user_type === 'corporate') {
             $prefecture = $user->corporateCustomer->delivery_add01;
-            $corporat_customer = $user->corporateCustomer;
+            $corporat_customer = $user->corporateCustomer; //corporateCustomerモデルから住所値を取得
             session(['address' => $corporat_customer]);
+            $corporate_customer_id = $user->corporateCustomer->id; //corporateCustomerモデルからidを取得
+            session(['corporate_customer_id' => $corporate_customer_id]);
 
             // CartService は $this->cartService を使う（__construct で注入済）
             $cart = $this->cartService->getCartItems($user, $prefecture);

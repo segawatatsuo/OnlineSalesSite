@@ -40,12 +40,19 @@ class OrderController extends AdminController
         // 作成日時の降順で表示
         $grid->model()->orderBy('created_at', 'desc');
 
+        // ✅ 今月の卸売り (ダッシュボードからのリンク用)
+        if (request()->has('wholesale') && request()->get('wholesale') == 1) {
+            $grid->model()->where('corporate_customer_id', '>', 0);
+        }
 
-        //ユーザーが「作成日時」のヘッダーをクリックして昇順・降順を切り替え可能に
-        $grid->column('created_at', __('作成日時'))->sortable();
+        if (request()->has('this_month') && request()->get('this_month') == 1) {
+            $now = \Carbon\Carbon::now();
+            $grid->model()
+                ->whereYear('created_at', $now->year)
+                ->whereMonth('created_at', $now->month);
+        }
 
-
-        // ✅ 月別絞り込み機能の追加
+        // ✅ 既存の month パラメータ処理
         if (request()->has('month')) {
             try {
                 [$year, $month] = explode('-', request()->get('month'));
@@ -56,15 +63,13 @@ class OrderController extends AdminController
             }
         }
 
-        // ✅ 今日の日付だけでフィルター
+        // ✅ 今日だけ
         if (request()->has('date')) {
             $date = request()->get('date');
             $start = $date . ' 00:00:00';
             $end = $date . ' 23:59:59';
-
             $grid->model()->whereBetween('created_at', [$start, $end]);
         }
-
 
         // フィルタの追加
         $grid->filter(function ($filter) {
@@ -88,6 +93,16 @@ class OrderController extends AdminController
                 'retail' => '一般',
                 'wholesale' => '卸売り',
             ]);
+
+            // 卸売りだけ
+            $filter->scope('wholesale', '卸売り')->where('corporate_customer_id', '>', 0);
+
+            // 今月だけ
+            $filter->scope('this_month', '今月')->where(function ($query) {
+                $now = \Carbon\Carbon::now();
+                $query->whereYear('created_at', $now->year)
+                    ->whereMonth('created_at', $now->month);
+            });
         });
 
         $grid->column('order_number', __('注文番号'));
