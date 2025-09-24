@@ -9,22 +9,21 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductJaController extends Controller
 {
-
+    /*
     public function index()
     {
         $products = ProductJa::with('category')->get();
-
         if ($products->isEmpty()) {
             abort(404);
         }
         $user = auth()->user();
-
         return view('products.index', compact('products', 'user'));
     }
-
+    */
 
     public function category($category)
     {
+        //空のコレクション（Collectionオブジェクト）を作る
         $premiumSilk = collect();
         $diamondLegs = collect();
 

@@ -1,13 +1,27 @@
 /* login.css */
 
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 .login-container {
+    flex: 1; /* 余った高さを占める */
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 60px - 100px); /* ヘッダーとフッターの高さを考慮 */
     padding: 20px;
-    background-color: #f8f9fa; /* 背景色を追加 */
+    background-color: #f8f9fa;
 }
+
+
+
 
 .login-card {
     background-color: #ffffff;
