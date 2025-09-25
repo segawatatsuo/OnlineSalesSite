@@ -21,6 +21,7 @@ class ProductJaController extends Controller
     }
     */
 
+    /*
     public function category($category)
     {
         //空のコレクション（Collectionオブジェクト）を作る
@@ -71,9 +72,6 @@ class ProductJaController extends Controller
             ]);
         } else {
 
-            /*******************************/
-            /*今はまだ他のカテゴリーを実装していない*/
-            /*******************************/
             return view('products.category', [
                 'category' => $category,
                 //'premiumSilk' => $premiumSilk,
@@ -82,8 +80,42 @@ class ProductJaController extends Controller
             ]);
         }
     }
+    */
 
+public function category($category)
+{
+    $user = Auth::user();
 
+    session()->put('category', $category);
+
+    $topPageItem = TopPage::where('category', 1)->first();
+
+    $baseQuery = ProductJa::with(['category', 'mainImage'])
+        ->whereHas('category', function ($query) use ($category) {
+            $query->where('brand', $category);
+        })
+        ->where('not_display', 0);
+
+    if ($user && $user->user_type === 'corporate') {
+        $baseQuery = $baseQuery->where('wholesale', 1);
+    } else {
+        $baseQuery = $baseQuery->where(function ($query) {
+            $query->whereNull('wholesale')
+                  ->orWhere('wholesale', 0);
+        });
+    }
+
+    // ★大分類ごとにまとめる
+    $productsByMajor = (clone $baseQuery)
+        ->get()
+        ->groupBy('major_classification');
+
+    return view('products.category', [
+        'category' => $category,
+        'productsByMajor' => $productsByMajor,
+        'topPageItem' => $topPageItem,
+    ]);
+}
 
     public function show($category, $id)
     {
