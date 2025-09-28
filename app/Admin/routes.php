@@ -50,6 +50,12 @@ Route::group([
      //社内のお知らせ
      $router->resource('shipping_fees', 'ShippingFeeController');
 
+     //カテゴリページ
+    $router->resource('categories', 'CategoryController');
+
+    //カテゴライゼーション
+    $router->resource('categorizations', 'CategorizationController');
+
 
     // ✅ 複製用のPOSTルートをここに追加！
     Route::post('product/duplicate', [ProductJaController::class, 'duplicate']);

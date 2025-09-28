@@ -11,9 +11,33 @@ class ProductJa extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id', 'name', 'description', 'price', 'member_price', 'stock', 'image', 'sort_order'];
-
     protected $table = 'product_jas'; // ← これを忘れずに！Laravelにproduct_jasテーブルを認識させる
+
+    protected $fillable =   [
+        'sort_order',
+        'category_id',
+        'not_display',
+        'name',
+        'description_1_heading',
+        'description_1',
+        'description_2_heading',
+        'description_2',
+        'image',
+        'price',
+        'shipping_fee',
+        'wholesale',
+        'product_code',
+        'category',
+        'major_classification',
+        'classification',
+        'classification_ja',
+        'kind',
+        'color',
+        'color_map',
+        'title_header',
+        'stock',
+        'major_classification_id'
+    ];
 
     public function category()
     {
@@ -51,5 +75,16 @@ class ProductJa extends Model
     public function subImages()
     {
         return $this->hasMany(ProductImageJa::class, 'product_ja_id');
+    }
+
+    public function majorClassification()
+    {
+        return $this->belongsTo(MajorClassification::class);
+    }
+
+    // Categoryとのリレーション（product_jas.category = categories.brand で関連付け）
+    public function categoryRelation()
+    {
+        return $this->belongsTo(Category::class, 'category', 'brand');
     }
 }

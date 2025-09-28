@@ -27,7 +27,8 @@ use App\Models\Order;
 use App\Models\User;
 use PhpParser\Node\Stmt\Return_;
 use Square\Environments;
-
+use Illuminate\Http\Request;
+use App\Models\Categorization;
 
 // トップページ
 Route::get('/', function () {
@@ -230,4 +231,54 @@ Route::middleware(['admin.auth'])->group(function () {
     Route::get('admin/mail-preview-template/{orderId}', [MailPreviewController::class, 'previewTemplate'])
         ->name('admin.mail-preview-template')
         ->where('orderId', '[0-9]+'); // 数字のみ許可
+});
+
+
+
+
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+Encore Admin(管理画面)のProduct(商品)ページでcategoryに関連するmajor_classificationのプルダウンを表示するためのAPI
+|--------------------------------------------------------------------------
+*/
+Route::get('/admin/api/major-classifications', function (Request $request) {
+    $categoryId = $request->get('q');
+    
+    if (!$categoryId) {
+        return response()->json([]);
+    }
+    
+    return \App\Models\Categorization::where('category_id', $categoryId)
+        ->whereNotNull('major_classification')
+        ->distinct()
+        ->pluck('major_classification')
+        ->map(fn($item) => ['id' => $item, 'text' => $item])
+        ->values();
+})->name('admin.api.major-classifications');
+
+/*
+|--------------------------------------------------------------------------
+Encore Admin(管理画面)のProduct(商品)ページでcategory->major_classificationに関連するclassificationのプルダウンを表示するためのAPI
+|--------------------------------------------------------------------------
+*/
+Route::get('/admin/api/classifications', function (Request $request) {
+    $major = $request->get('q');
+    $categoryId = $request->get('category_id'); // 必要なら一緒に渡す
+
+    if (!$major) {
+        return response()->json([]);
+    }
+
+    return \App\Models\Categorization::where('major_classification', $major)
+        ->when($categoryId, fn($q) => $q->where('category_id', $categoryId))
+        ->whereNotNull('classification')
+        ->distinct()
+        ->pluck('classification')
+        ->map(fn($item) => ['id' => $item, 'text' => $item])
+        ->values();
 });

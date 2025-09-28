@@ -119,8 +119,9 @@ class ProductJaController extends AdminController
     {
         $form = new Form(new ProductJa());
 
-        //$form->number('category_id', __('カテゴリID'));
+
         $form->text('category.brand', 'ブランド');
+        
         $form->text('name', __('商品名'));
         $form->textarea('description', __('説明文'));
         //$form->image('image', __('Image'));
