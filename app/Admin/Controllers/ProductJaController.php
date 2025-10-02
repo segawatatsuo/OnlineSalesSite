@@ -12,8 +12,6 @@ use Encore\Admin\Show;
 use Encore\Admin\Widgets\Form as WidgetForm;
 use Encore\Admin\Form\NestedForm;
 
-
-// ↓ 追加
 use App\Admin\Actions\Grid\DuplicateAction;
 use App\Models\Category;
 
@@ -41,10 +39,10 @@ class ProductJaController extends AdminController
         // リレーション経由でカテゴリ名を表示
         //$grid->column('category.brand', 'ブランド');
 
-// 表示部分の修正（$gridまたは$showメソッド内）
-$grid->column('category_id', 'ブランド')->display(function ($categoryId) {
-    return Category::find($categoryId)?->brand ?? $categoryId;
-});
+        // 表示部分の修正（$gridまたは$showメソッド内）
+        $grid->column('category_id', 'ブランド')->display(function ($categoryId) {
+            return Category::find($categoryId)?->brand ?? $categoryId;
+        });
         $grid->column('major_classification', __('大分類'));
 
         $grid->column('classification', __('小分類'));
@@ -98,12 +96,12 @@ $grid->column('category_id', 'ブランド')->display(function ($categoryId) {
         $show->field('major_classification', __('大分類'));
 
         $show->field('classification', __('小分類'));
- 
+
         $show->field('kind', __('種類'));
 
-        
-        
-$show->field('title_header', __('タイトルヘッダー'));
+
+
+        $show->field('title_header', __('タイトルヘッダー'));
         $show->field('description_1_heading', '商品見出し1');
         $show->field('description_1', __('説明文1'));
         $show->field('description_2_heading', '商品見出し2');
@@ -113,11 +111,11 @@ $show->field('title_header', __('タイトルヘッダー'));
         $show->field('not_display', __('非表示'));
         $show->field('price', __('価格'));
 
-        
 
 
 
-        
+
+
         $show->field('stock', __('在庫数'));
         $show->field('created_at', __('Created at'));
         $show->field('updated_at', __('Updated at'));
@@ -143,131 +141,49 @@ $show->field('title_header', __('タイトルヘッダー'));
     {
         $form = new Form(new ProductJa());
 
-        //$form->text('category_id', __('カテゴリID'));
-        //$form->text('category.brand', 'ブランド');
-
-        /*
-        $form->select('category_id', 'カテゴリ')
-            ->options(Category::pluck('brand', 'id'))
-            ->required();
-
-        // 保存前の処理
-        $form->saving(function (Form $form) {
-            // デバッグ情報
-            \Log::info('=== 保存前処理 ===');
-            \Log::info('選択されたカテゴリ', ['category' => $form->input('category')]);
-
-            // 明示的にcategoryを設定
-            $categoryValue = $form->input('category');
-            if ($categoryValue) {
-                $form->model()->category = $categoryValue;
-                \Log::info('モデルにカテゴリ設定', ['category' => $form->model()->category]);
-            }
-        });
-
-        // 保存後の確認
-        $form->saved(function (Form $form) {
-            \Log::info('=== 保存後確認 ===');
-            \Log::info('保存されたデータ', $form->model()->toArray());
-
-            // データベースから直接確認
-            $saved = ProductJa::find($form->model()->id);
-            \Log::info('DB確認', ['id' => $saved->id, 'category' => $saved->category]);
-        });
-*/
-
-
-
-        //$form->select('major_classification', '大分類');
-
-
-
-
-
         $form->text('name', __('商品名'));
-$form->text('product_code', __('商品コード'));
 
-/*
-// カテゴリのオプションを明示的に配列で作成
-$categoryOptions = Category::all()->pluck('brand', 'id')->toArray();
-$form->select('category_id', 'カテゴリ')
-    ->options($categoryOptions)
-    ->load('major_classification', '/admin/api/major-classifications')
-    ->required();
+        $form->text('product_code', __('商品コード'));
 
-$form->select('major_classification', '大分類')
-    ->options(function ($value) use ($form) {
-        // 編集時に category_id が入っていれば候補を取得
-        $categoryId = $form->model()->category_id ?? null;
+        $form->select('category_id', 'ブランド')
+            ->options(Category::pluck('brand', 'id'))
+            ->load('major_classification', '/admin/api/major-classifications');
 
-        if ($categoryId) {
-            return \App\Models\Categorization::where('category_id', $categoryId)
-                ->whereNotNull('major_classification')
-                ->pluck('major_classification', 'major_classification');
-        }
+        $form->select('major_classification', '大分類')
+            ->options(function ($value) use ($form) {
+                $categoryId = $form->model()->category_id ?? null;
+                if ($categoryId) {
+                    return \App\Models\Categorization::where('category_id', $categoryId)
+                        ->whereNotNull('major_classification')
+                        ->pluck('major_classification', 'major_classification');
+                }
+                return [];
+            })
+            ->load('classification', '/admin/api/classifications'); // ← ここで小分類を連動
 
-        return [];
-    })
-    ->required();
-*/
+        $form->select('classification', '小分類')
+            ->options(function ($value) use ($form) {
+                $categoryId = $form->model()->category_id ?? null;
+                $major = $form->model()->major_classification ?? null;
 
-
-$form->select('category_id', 'ブランド')
-    ->options(Category::pluck('brand', 'id'))
-    ->load('major_classification', '/admin/api/major-classifications');
-
-$form->select('major_classification', '大分類')
-    ->options(function ($value) use ($form) {
-        $categoryId = $form->model()->category_id ?? null;
-        if ($categoryId) {
-            return \App\Models\Categorization::where('category_id', $categoryId)
-                ->whereNotNull('major_classification')
-                ->pluck('major_classification', 'major_classification');
-        }
-        return [];
-    })
-    ->load('classification', '/admin/api/classifications'); // ← ここで小分類を連動
-
-$form->select('classification', '小分類')
-    ->options(function ($value) use ($form) {
-        $categoryId = $form->model()->category_id ?? null;
-        $major = $form->model()->major_classification ?? null;
-
-        if ($categoryId && $major) {
-            return \App\Models\Categorization::where('category_id', $categoryId)
-                ->where('major_classification', $major)
-                ->whereNotNull('classification')
-                ->pluck('classification', 'classification');
-        }
-        return [];
-    });
-
+                if ($categoryId && $major) {
+                    return \App\Models\Categorization::where('category_id', $categoryId)
+                        ->where('major_classification', $major)
+                        ->whereNotNull('classification')
+                        ->pluck('classification', 'classification');
+                }
+                return [];
+            });
 
         $form->text('kind', __('種類'));
-
         $form->text('title_header', __('タイトルヘッダー'));
         $form->text('description_1_heading', '商品見出し1');
         $form->textarea('description_1', __('説明文1'));
         $form->text('description_2_heading', '商品見出し2');
         $form->textarea('description_2', __('説明文2'));
-
-        
-
         $form->switch('wholesale', __('法人商品'));
         $form->switch('not_display', __('非表示'));
         $form->number('price', __('価格'));
-        
-
-        // 大分類
-        /*
-    $form->select('major_category_id', '大分類')
-        ->options(\App\Models\MajorClassification::pluck('name', 'id'))
-        ->required();*/
-
-        //$form->text('classification', __('分類'));
-        //$form->text('classification_ja', __('分類名'));
-        //$form->text('kind', __('種類'));
-        
         $form->number('stock', __('在庫数'));
 
         // 複数画像登録（画像に制限なし）
