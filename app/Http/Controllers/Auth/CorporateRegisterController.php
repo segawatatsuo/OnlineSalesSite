@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CorporateRegistrationRequest; // 法人登録用
-use App\Http\Requests\IndividualRegistrationRequest; // ここを追加: 個人登録用
+use App\Http\Requests\CorporateRegistrationRequest;
+use App\Http\Requests\IndividualRegistrationRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\CorporateCustomer;
@@ -21,7 +21,6 @@ class CorporateRegisterController extends Controller
 
     public function showForm()
     {
-        //dd("showForm");
         return view('auth.corporate-register');
     }
 
@@ -34,10 +33,7 @@ class CorporateRegisterController extends Controller
     public function confirm(CorporateRegistrationRequest $request)
     {
         $input = $request->validated();
-        //dd($input);
-
         $request->session()->put('corporate_register_data', $input);
-        //dd(session('corporate_register_data'));
         return view('auth.corporate-confirm', ['input' => $input]);
     }
 
@@ -141,11 +137,9 @@ class CorporateRegisterController extends Controller
             */
             return redirect()->route('corporate.register.confirm_message');
 
-            
+
         } catch (\Exception $e) {
             DB::rollback();
-            // エラーログ出力 (開発時に役立ちます)
-            // \Log::error('法人登録エラー: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['error' => '登録処理中にエラーが発生しました。予期せぬエラーが発生しました。時間をおいて再度お試しください。']);
@@ -161,16 +155,13 @@ class CorporateRegisterController extends Controller
     /**
      * 個人ユーザー登録の確認処理
      *
-     * @param  \App\Http\Requests\IndividualRegistrationRequest  $request // ここを修正
+     * @param  \App\Http\Requests\IndividualRegistrationRequest
      * @return \Illuminate\View\View
      */
-    public function confirmIndividual(IndividualRegistrationRequest $request) // ここを修正
+    public function confirmIndividual(IndividualRegistrationRequest $request)
     {
-        // IndividualRegistrationRequest がバリデーションを自動的に行います。
-        $input = $request->validated(); // バリデート済みのデータを取得
-
+        $input = $request->validated();
         $request->session()->put('register_data', $input);
-
         return view('auth.confirm', ['input' => $input]);
     }
 

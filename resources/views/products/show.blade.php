@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '商品詳細 | '.$product->product_code)
+@section('title', '商品詳細 | ' . $product->product_code)
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/detail-page.css') }}">
@@ -53,15 +53,15 @@
                     <img src="{{ asset('images/other/AirStocking_POINT123.jpg') }}" alt="商品イメージ">
                 </div>
 
-                <form method="POST" action="{{ route('cart.add') }}">
+                <form method="POST" action="{{ route('cart.store') }}">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                     <div class="purchase-section">
-                        <p>{{ optional($product)->product_code}} {{ optional($product)->name }}</p>
+                        <p>{{ optional($product)->product_code }} {{ optional($product)->name }}</p>
                         <p class="product-price">&yen;{{ number_format(optional($product)->price) }} (税込)</p>
                         <div class="quantity-section">
                             <label class="quantity-label">数量:</label>
-                            <input type="number" class="quantity-input" value="1" min="1" name="quantity" >
+                            <input type="number" class="quantity-input" value="1" min="1" name="quantity">
                         </div>
                         <button class="add-to-cart">カートに入れる</button>
                     </div>
@@ -96,27 +96,27 @@
     </div>
 
     @push('scripts')
-    <script>
-        function openModal(element) {
-            const modal = document.getElementById("imageModal");
-            const modalImg = document.getElementById("modalImage");
-            const img = element.querySelector("img"); // サムネ or メイン画像
-            modal.style.display = "block";
-            modalImg.src = img.src;
-        }
-
-        function closeModal() {
-            document.getElementById("imageModal").style.display = "none";
-        }
-
-        // モーダル背景クリックでも閉じられるように
-        window.onclick = function(event) {
-            const modal = document.getElementById("imageModal");
-            if (event.target === modal) {
-                modal.style.display = "none";
+        <script>
+            function openModal(element) {
+                const modal = document.getElementById("imageModal");
+                const modalImg = document.getElementById("modalImage");
+                const img = element.querySelector("img"); // サムネ or メイン画像
+                modal.style.display = "block";
+                modalImg.src = img.src;
             }
-        }
-    </script>
-@endpush
+
+            function closeModal() {
+                document.getElementById("imageModal").style.display = "none";
+            }
+
+            // モーダル背景クリックでも閉じられるように
+            window.onclick = function(event) {
+                const modal = document.getElementById("imageModal");
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
+    @endpush
 
 @endsection

@@ -7,9 +7,9 @@
         </div>
         <ul class="nav-menu" id="navMenu">
             <li><a href="{{ asset('/') }}">CCM</a></li>
-            <li><a href="{{ asset('product/airstocking') }}">エアストッキング&reg;</a></li>
-            <li><a href="{{ asset('product/gelnail') }}">3in1&reg;ジェルネイル</a></li>
-            <li><a href="{{ asset('product/wax') }}">美脚脱毛</a></li>
+            <li><a href="{{ asset('products/airstocking') }}">エアストッキング&reg;</a></li>
+            <li><a href="{{ asset('products/gelnail') }}">3in1&reg;ジェルネイル</a></li>
+            <li><a href="{{ asset('products/wax') }}">美脚脱毛</a></li>
 
             <!-- ログアウトボタン -->
             @if (Auth::check() && !Route::is('home'))

@@ -36,8 +36,8 @@
 @section('content')
 
     <main class="container">
-        <form method="POST" action="{{ route('order.confirm') }}" class="post-content">
-            @csrf 
+        <form method="POST" action="{{ route('orders.confirm') }}" class="post-content">
+            @csrf
 
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -49,7 +49,7 @@
                 </div>
             @endif
 
-            <main class="main"> 
+            <main class="main">
                 <h1>注文者情報入力</h1>
                 <div class="h-adr">
                     <span class="p-country-name" style="display:none;">Japan</span>

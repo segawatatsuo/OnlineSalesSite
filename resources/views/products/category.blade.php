@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '商品一覧 | '.$category)
+@section('title', '商品一覧 | ' . $category)
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/top-page.css') }}">
@@ -75,9 +75,7 @@
                         <div class="video-container fade-in">
                             <h2>MOVIE</h2>
                             <div class="video-wrapper">
-                                <iframe
-                                    src="{{ optional($topPageItem)->movie_section_url }}"
-                                    allowfullscreen></iframe>
+                                <iframe src="{{ optional($topPageItem)->movie_section_url }}" allowfullscreen></iframe>
                             </div>
                         </div>
                     </div>
@@ -86,48 +84,48 @@
 
         @endif
 
-<section class="section3">
-    <div class="container">
-        <h2 class="fade-in">LINE UP</h2>
+        <section class="section3">
+            <div class="container">
+                <h2 class="fade-in">LINE UP</h2>
 
-        @foreach ($productsByMajor as $major => $products)
-            <div class="product-block fade-in">
-                <h3>{{ strtoupper($major) }}</h3>
-                <div class="product-grid">
-                    @foreach ($products as $product)
-                        <div class="product-card">
-                            <div class="product-image">
-                                <a href="{{ asset('product/' . $category . '/' . $product->id) }}">
-                                    @if ($product->mainImage)
-                                        <img src="{{ url('uploads/' . $product->mainImage->image_path) }}" alt="">
-                                    @else
-                                        <img src="{{ asset('images/noimage.png') }}" alt="画像なし">
-                                    @endif
-                                </a>
-                            </div>
-                            <div class="product-code">{{ $product->product_code }}</div>
-                            <div class="product-name">{{ $product->name }}</div>
+                @foreach ($productsByMajor as $major => $products)
+                    <div class="product-block fade-in">
+                        <h3>{{ strtoupper($major) }}</h3>
+                        <div class="product-grid">
+                            @foreach ($products as $product)
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        <a href="{{ asset('products/' . $category . '/' . $product->id) }}">
+                                            @if ($product->mainImage)
+                                                <img src="{{ url('uploads/' . $product->mainImage->image_path) }}"
+                                                    alt="">
+                                            @else
+                                                <img src="{{ asset('images/noimage.png') }}" alt="画像なし">
+                                            @endif
+                                        </a>
+                                    </div>
+                                    <div class="product-code">{{ $product->product_code }}</div>
+                                    <div class="product-name">{{ $product->name }}</div>
 
-                            <div class="product-bottom">
-                                <div class="product-price">
-                                    ￥{{ number_format($product->price) }} (税込)
+                                    <div class="product-bottom">
+                                        <div class="product-price">
+                                            ￥{{ number_format($product->price) }} (税込)
+                                        </div>
+                                        <form method="POST" action="{{ route('cart.store') }}">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                            <input type="number" class="quantity-input" value="1" min="1"
+                                                name="quantity">
+                                            <button class="add-to-cart">カートに入れる</button>
+                                        </form>
+                                    </div>
                                 </div>
-                                <form method="POST" action="{{ route('cart.add') }}">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <input type="number" class="quantity-input" value="1" min="1" name="quantity">
-                                    <button class="add-to-cart">カートに入れる</button>
-                                </form>
-                            </div>
+                            @endforeach
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endforeach
             </div>
-        @endforeach
-    </div>
-</section>
-
-
+        </section>
     @else
         <main class="main"
             style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 80vh; text-align: center;">
