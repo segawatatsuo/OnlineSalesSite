@@ -9,7 +9,6 @@ use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
-
 // カスタムアクションをインポート
 use App\Admin\Actions\SendShippingMail;
 use App\Admin\Actions\CheckShippingMail; // 修正: CheckShippingMailAction から CheckShippingMail へ
@@ -343,25 +342,15 @@ class OrderController extends AdminController
             }
         })->ajax('/admin/api/customers');
 
-
         // 配達情報
         $form->date('delivery_date', __('配達希望日'));
         $form->time('delivery_time', __('配達希望時間'));
         $form->textarea('your_request', __('ご要望'));
-
-
         $form->html('<div style="border-bottom:1px solid #ddd; margin:20px 0;"></div>');
-
-
         $form->date('shipping_date', __('発送日'));
         $form->text('tracking_number', __('配送伝票番号'));
         $form->text('shipping_company', __('運送会社名'));
-
-
         $form->html('<div style="border-bottom:1px solid #ddd; margin:20px 0;"></div>');
-
-
-
 
         // 注文者情報
         $form->text('customer.zip', __('注文者郵便番号'));
@@ -370,10 +359,7 @@ class OrderController extends AdminController
         $form->text('customer.input_add03', __('注文者住所3'));
         $form->text('customer.phone', __('注文者電話番号'));
         $form->text('customer.email', __('注文者メールアドレス'));
-
-
         $form->html('<div style="border-bottom:1px solid #ddd; margin:20px 0;"></div>');
-
 
         // 配送先情報
         $form->text('delivery.zip', __('配送先郵便番号'));
@@ -383,22 +369,28 @@ class OrderController extends AdminController
         $form->text('delivery.phone', __('配送先電話番号'));
         $form->text('delivery.email', __('配送先メールアドレス'));
 
-
         // --- ここから商品明細部分 ---
         // HasMany関係でorderItemsを表示
         $form->hasMany('orderItems', __('注文商品'), function (Form\NestedForm $form) {
-            $form->text('product_code', __('商品コード'))->rules('required');
-            $form->text('name', __('商品名'))->rules('required');
-            $form->decimal('price', __('単価'))->rules('required|numeric|min:0');
-            $form->number('quantity', __('数量'))->rules('required|integer|min:1');
-            // 小計は通常、保存時や表示時に計算されるため、編集フィールドには含めないことが多い
-            // 必要であれば、displayメソッドやカスタムロジックで表示することも可能
+            $form->text('product_code', __('商品コード'));
+            $form->text('name', __('商品名'));
+
+            // 'price' カラムを3桁区切りにする
+            $form->text('price', __('単価'))
+                 ->inputmask([
+                     'alias' => 'integer', // 整数モード
+                     'autoGroup' => true,  // 自動でグループ化を有効に
+                     'groupSeparator' => ',', // 区切り文字をカンマに
+                     'rightAlign' => false, // 右寄せにしない（お好みで）
+                 ])->options([/* ... */])->setWidth(2);
+
+            $form->number('quantity', __('数量'));
+
         });
         // --- ここまで商品明細部分 ---
 
-        // 合計金額（読み取り専用）
-        // total_priceがorderItemsから自動計算される場合、hasManyの保存フックなどで更新する
-        $form->currency('total_price', __('合計金額'))->symbol('¥')->readonly();
+
+        $form->number('total_price', __('合計金額'))->readonly();
 
         // 保存前後のフックで合計金額を更新する例
         $form->saving(function (Form $form) {
@@ -414,8 +406,6 @@ class OrderController extends AdminController
                 $form->total_price = $total;
             }
         });
-
-
         return $form;
     }
 }

@@ -18,7 +18,6 @@ use App\Models\DeliveryTime; // 追加
 use App\Models\ShippingFee;
 use Illuminate\Support\Facades\DB;
 
-
 class AmazonPayController extends Controller
 {
     protected $amazonPayService;
@@ -59,7 +58,7 @@ class AmazonPayController extends Controller
      * AmazonPayService.phpの$payloadでamazon-pay.completeを戻るページに指定している。
      * $payload = [
      *       'webCheckoutDetails' => [
-     *           'checkoutResultReturnUrl' => route('amazon-pay.complete'), 
+     *           'checkoutResultReturnUrl' => route('amazon-pay.complete'),
      * ここで仮注文登録とサンクスメールを出す
      */
     public function complete(Request $request)
@@ -98,9 +97,11 @@ class AmazonPayController extends Controller
             // === セッション削除 ===
             Session::forget(['cart', 'address']);
 
-            return redirect()->route('order.complete')->with('success', '注文が完了しました。');
+            return redirect()->route('orders.complete')->with('success', '注文が完了しました。');
+
         } catch (\Exception $e) {
             \Log::error('AmazonPay complete() 注文処理エラー', ['error' => $e->getMessage()]);
+
             return redirect()->route('cart.index')->with('error', '注文処理に失敗しました: ' . $e->getMessage());
         }
     }

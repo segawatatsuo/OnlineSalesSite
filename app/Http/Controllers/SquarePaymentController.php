@@ -13,7 +13,6 @@ use Square\SquareClientBuilder;
 use Square\Authentication\BearerAuthCredentialsBuilder;
 use Square\Environments;
 use Square\Models\Error;
-
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
@@ -27,7 +26,6 @@ use App\Models\Delivery;
 use App\Mail\OrderConfirmed;
 use App\Mail\OrderNotification;
 use Illuminate\Support\Facades\Session;
-
 
 class SquarePaymentController extends Controller
 {

@@ -21,7 +21,7 @@
                 今後ともCCメディコをどうぞよろしくお願いいたします。
             </p>
             <br>
-            <p><a href="{{ route('products.index') }}">CCメディコトップページ</a></p>
+            <p><a href="{{ route('top') }}">CCメディコトップページ</a></p>
         </div>
     </main>
 @endsection

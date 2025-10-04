@@ -31,7 +31,7 @@
             <p>ご注文ありがとうございました。<br>
                 確認メールを送信いたします。</p>
 
-            <a href="{{ url('/') }}" class="back-button">トップページに戻る</a>
+            <a href="{{ rout('top') }}" class="back-button">トップページに戻る</a>
         </div>
     </main>
 @endsection

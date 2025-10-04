@@ -79,11 +79,13 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::delete('/destroy', [CartController::class, 'destroy'])->name('destroy');// 商品削除
 
     // 特例：決済関連（REST外アクション）
+    /*
     Route::get('amazonpay/checkout', [AmazonPayController::class, 'checkout'])->name('amazonpay.checkout');
     Route::post('amazonpay/complete', [AmazonPayController::class, 'complete'])->name('amazonpay.complete');
-
+    */
     Route::post('square/checkout', [SquarePaymentController::class, 'checkout'])->name('square.checkout');
     Route::post('square/complete', [SquarePaymentController::class, 'complete'])->name('square.complete');
+
 });
 
 /*
@@ -218,7 +220,6 @@ Route::get('/corporate/register/confirm_message', function () {
 })->name('corporate.register.confirm_message');
 
 
-
 // 顧客マイページ（認証必須、メール認証済み必須）
 Route::middleware(['auth', 'verified'])->prefix('mypage')->name('mypage.')->group(function () {
     Route::get('/', [MypageController::class, 'index'])->name('index');
@@ -227,8 +228,6 @@ Route::middleware(['auth', 'verified'])->prefix('mypage')->name('mypage.')->grou
     Route::get('password', [MypageController::class, 'editPassword'])->name('password.edit');
     Route::post('password', [MypageController::class, 'updatePassword'])->name('password.update');
 });
-
-
 
 /*
 // 管理者ルート（ログイン必須）
@@ -244,7 +243,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
 
 /*
 |--------------------------------------------------------------------------
-| 管理者ルート
+| 管理者ルート(Encore Laravel-Admin)
 |--------------------------------------------------------------------------
 */
 
@@ -332,8 +331,6 @@ Route::get('thank-you', function () {
 })->name('order.thank-you');
 
 
-
-
 /*
 // 法人ユーザー向けのメール再送信ルート
 Route::post('/corporate/resend-verification', function () {
@@ -377,7 +374,6 @@ Route::prefix('amazon-pay')->name('amazon-pay.')->group(function () {
 });
 
 
-
 /*
 |--------------------------------------------------------------------------
 | square Routes
@@ -389,8 +385,6 @@ Route::prefix('square')->name('square.')->group(function () {
     Route::post('/process-payment', [SquarePaymentController::class, 'processPayment'])->name('process-payment');
     Route::post('/capture-payment/{paymentId}', [SquarePaymentController::class, 'capturePayment'])->name('capture-payment');
 });
-
-
 
 
 // Admin画面での商品発送メールのプレビュー
@@ -406,13 +400,6 @@ Route::middleware(['admin.auth'])->group(function () {
         ->name('admin.mail-preview-template')
         ->where('orderId', '[0-9]+'); // 数字のみ許可
 });
-
-
-
-
-
-
-
 
 
 /*

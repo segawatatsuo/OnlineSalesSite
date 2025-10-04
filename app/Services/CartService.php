@@ -1,5 +1,7 @@
 <?php
+
 // app/Services/CartService.php
+
 namespace App\Services;
 
 use App\Models\ProductJa;
@@ -15,7 +17,6 @@ class CartService
         $this->shippingFeeService = $shippingFeeService;
     }
 
-
     public function getCartItems($user = null, string $prefecture = null)
     {
         $cart = session()->get('cart', []);
@@ -29,7 +30,6 @@ class CartService
             }
             $price = $item['price'];
             $subtotal = $price * $item['quantity'];
-
 
             $items[] = [
                 'product_id' => $productId,
@@ -65,7 +65,6 @@ class CartService
 
     public function addProduct($product, $quantity, $user = null)
     {
-        //$price = $user ? $product->member_price : $product->price;
         $price = $product->price;
         $cart = session()->get('cart', []);
 
@@ -81,7 +80,6 @@ class CartService
             ];
         }
         session()->put('cart', $cart);
-        //dd(session('cart'));
     }
 
     public function updateQuantity($productId, $quantity)
