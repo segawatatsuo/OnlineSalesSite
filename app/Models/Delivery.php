@@ -9,7 +9,7 @@ class Delivery extends Model
 {
     use HasFactory;
     protected $table = 'deliveries';
-    protected $fillable = ['sei', 'mei', 'email', 'phone', 'zip', 'input_add01', 'input_add02', 'input_add03'];
+    protected $fillable = ['company_name','department','sei', 'mei', 'email', 'phone', 'zip', 'input_add01', 'input_add02', 'input_add03'];
 
     public function getFullNameAttribute()
     {

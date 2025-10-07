@@ -40,6 +40,9 @@ class AmazonPayController extends Controller
      */
     public function createSession(Request $request)
     {
+        $address = session('address');
+        //dd($address);
+
         try {
             $amount = $request->input('amount');
             $paymentData = $this->amazonPayService->createPayload($amount);
@@ -63,6 +66,7 @@ class AmazonPayController extends Controller
      */
     public function complete(Request $request)
     {
+
         //リクエストのURLに含まれるクエリパラメータ（URLの?以降の部分）から、**amazonCheckoutSessionId**というキーに対応する値を取得しています。
         $amazonCheckoutSessionId = $request->query('amazonCheckoutSessionId');
 

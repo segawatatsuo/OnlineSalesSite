@@ -7,40 +7,38 @@
     <link rel="stylesheet" href="{{ asset('css/amazon_payment_confirm.css') }}">
     <link rel="stylesheet" href="{{ asset('css/_responsive.css') }}">
 
-<style>
-    .section-title {
-  text-align: center;
-  font-size: 2.2em;
-  /* タイトルを少し大きく */
-  margin-bottom: 40px;
-  /*color: #4a546e;*/
-  /* タイトル色を落ち着いたネイビーグレーに */
-  color: #50391a;
-  position: relative;
-  padding-bottom: 10px;
-  font-weight: 700;
-  /* より強調 */
-}
+    <style>
+        .section-title {
+            text-align: center;
+            font-size: 2.2em;
+            /* タイトルを少し大きく */
+            margin-bottom: 40px;
+            /*color: #4a546e;*/
+            /* タイトル色を落ち着いたネイビーグレーに */
+            color: #50391a;
+            position: relative;
+            padding-bottom: 10px;
+            font-weight: 700;
+            /* より強調 */
+        }
 
-.section-title::after {
-  content: '';
-  display: block;
-  width: 80px;
-  /* 下線を少し長く */
-  height: 3px;
-  /*background-color: #6c7b8b;*/
-  /* 下線の色を落ち着いた青グレーに */
-  background-color: #50391a;
-  margin: 10px auto 0;
-}
-</style>
-
-
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            /* 下線を少し長く */
+            height: 3px;
+            /*background-color: #6c7b8b;*/
+            /* 下線の色を落ち着いた青グレーに */
+            background-color: #50391a;
+            margin: 10px auto 0;
+        }
+    </style>
 @endpush
 
 @section('content')
 
-        <main class="main">
+    <main class="main">
 
         <div class="container">
 
@@ -78,7 +76,7 @@
             productType: 'PayOnly',
             placement: 'Cart',
             buttonColor: 'Gold',
-            buttonSize: 'small',   // または 'medium', 'large'
+            buttonSize: 'small', // または 'medium', 'large'
             createCheckoutSessionConfig: {
                 payloadJSON: '{!! $payloadJson !!}',
                 signature: '{{ $signature }}',

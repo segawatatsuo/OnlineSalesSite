@@ -45,13 +45,23 @@ class OrderController extends Controller
         $user = auth()->user();
 
         if ($user && $user->user_type === 'corporate') {
+
+
+            // データベースをリロードして最新のデータを取得
+            $user->corporateCustomer->refresh();
+
+
             $prefecture = $user->corporateCustomer->delivery_add01;
             $corporat_customer = $user->corporateCustomer;
-            session(['address' => $corporat_customer]);
             $corporate_customer_id = $user->corporateCustomer->id;
+
+            session(['address' => $corporat_customer]);
             session(['corporate_customer_id' => $corporate_customer_id]);
 
+
             $cart = $this->cartService->getCartItems($user, $prefecture);
+            session(['shipping_fee' => $cart['shipping_fee']]);
+
             $getCartItems = $this->cartService->getCartItems(null, $prefecture);
             return view('order.corporate_confirm', [
                 'user' => $user,
@@ -66,6 +76,9 @@ class OrderController extends Controller
 
         $prefecture = null;
         $cart = $this->cartService->getCartItems($user, $prefecture);
+        session(['shipping_fee' => $cart['shipping_fee']]);
+
+
         return view('order.create', [
             'items' => $cart['items'],
             'subtotal' => $cart['subtotal'],

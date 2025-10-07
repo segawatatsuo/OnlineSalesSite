@@ -24,14 +24,15 @@ class Order extends Model
         'square_payment_id',
         'amazon_chargePermissionId',
         'amazon_chargeId',
-        'corporate_customer_id'
+        'corporate_customer_id',
+        'shipping_fee'
     ];
 
     // ステータス定数
-    const STATUS_PENDING   = 0; // 仮注文（CheckoutSession作成済み）
-    const STATUS_AUTH      = 1; // 与信済み（Authorized）
-    const STATUS_CAPTURED  = 2; // 売上確定（Captured）
-    const STATUS_CANCELED  = 9; // キャンセル済み
+    public const STATUS_PENDING   = 0; // 仮注文（CheckoutSession作成済み）
+    public const STATUS_AUTH      = 1; // 与信済み（Authorized）
+    public const STATUS_CAPTURED  = 2; // 売上確定（Captured）
+    public const STATUS_CANCELED  = 9; // キャンセル済み
 
     /**
      * ステータス名を返すアクセサ

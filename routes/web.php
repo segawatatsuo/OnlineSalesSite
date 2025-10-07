@@ -30,6 +30,7 @@ use PhpParser\Node\Stmt\Return_;
 use Square\Environments;
 use Illuminate\Http\Request;
 use App\Models\Categorization;
+use App\Http\Controllers\CorporateCustomerAddressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,6 +99,7 @@ Route::prefix('orders')->name('orders.')->group(function () {
     Route::post('confirm', [OrderController::class, 'confirm'])->name('confirm'); // 確認画面
     Route::post('/', [OrderController::class, 'store'])->name('store');         // 注文確定
     Route::get('complete', [OrderController::class, 'complete'])->name('complete'); // 完了画面
+    Route::get('modify/{type}', [OrderController::class, 'modify'])->name('modify');
 });
 
 
@@ -442,4 +444,72 @@ Route::get('/admin/api/classifications', function (Request $request) {
         ->pluck('classification')
         ->map(fn ($item) => ['id' => $item, 'text' => $item])
         ->values();
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| 法人顧客住所追加機能
+|--------------------------------------------------------------------------
+*/
+
+/*
+// 住所一覧
+Route::get(
+    '/corporate_customers/{id}/addresses/{type}',
+    [CorporateCustomerAddressController::class, 'edit']
+)
+    ->name('corporate_customers.addresses.edit');
+
+// 新規登録画面
+Route::get(
+    '/corporate_customers/{id}/addresses/{type}/create',
+    [CorporateCustomerAddressController::class, 'create']
+)
+    ->name('corporate_customers.addresses.create');
+
+// 登録処理
+Route::post(
+    '/corporate_customers/{id}/addresses',
+    [CorporateCustomerAddressController::class, 'store']
+)
+    ->name('corporate_customers.addresses.store');
+
+// メイン切り替え
+Route::post(
+    '/corporate_customers/{id}/addresses/{addressId}/select-main',
+    [CorporateCustomerAddressController::class, 'selectMain']
+)
+    ->name('corporate_customers.addresses.selectMain');
+*/
+
+// 法人顧客住所管理
+Route::middleware(['auth'])->group(function () {
+    // 住所一覧
+    Route::get(
+        '/corporate_customers/{id}/addresses/{type}',
+        [CorporateCustomerAddressController::class, 'edit']
+    )
+        ->name('corporate_customers.addresses.edit');
+
+    // 新規登録画面
+    Route::get(
+        '/corporate_customers/{id}/addresses/{type}/create',
+        [CorporateCustomerAddressController::class, 'create']
+    )
+        ->name('corporate_customers.addresses.create');
+
+    // 登録処理
+    Route::post(
+        '/corporate_customers/{id}/addresses',
+        [CorporateCustomerAddressController::class, 'store']
+    )
+        ->name('corporate_customers.addresses.store');
+
+    // メイン切り替え
+    Route::post(
+        '/corporate_customers/{id}/addresses/{addressId}/select-main',
+        [CorporateCustomerAddressController::class, 'selectMain']
+    )
+        ->name('corporate_customers.addresses.selectMain');
 });

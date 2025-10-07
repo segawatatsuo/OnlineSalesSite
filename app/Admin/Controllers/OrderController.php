@@ -354,6 +354,11 @@ class OrderController extends AdminController
 
         // 注文者情報
         $form->text('customer.zip', __('注文者郵便番号'));
+        $form->text('customer.company_name', __('会社名'));
+        $form->text('customer.department', __('部署名'));
+        $form->text('customer.sei', __('注文者姓'));
+        $form->text('customer.mei', __('注文者名'));
+
         $form->text('customer.input_add01', __('注文者住所1'));
         $form->text('customer.input_add02', __('注文者住所2'));
         $form->text('customer.input_add03', __('注文者住所3'));
@@ -363,6 +368,12 @@ class OrderController extends AdminController
 
         // 配送先情報
         $form->text('delivery.zip', __('配送先郵便番号'));
+
+        $form->text('delivery.company_name', __('配送先会社名'));
+        $form->text('delivery.department', __('配送先部署名'));
+        $form->text('delivery.sei', __('配送先姓'));
+        $form->text('delivery.mei', __('配送先名'));
+
         $form->text('delivery.input_add01', __('配送先住所1'));
         $form->text('delivery.input_add02', __('配送先住所2'));
         $form->text('delivery.input_add03', __('配送先住所3'));
@@ -389,7 +400,7 @@ class OrderController extends AdminController
         });
         // --- ここまで商品明細部分 ---
 
-
+        $form->number('shipping_fee', __('送料'))->readonly();
         $form->number('total_price', __('合計金額'))->readonly();
 
         // 保存前後のフックで合計金額を更新する例

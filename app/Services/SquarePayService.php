@@ -6,14 +6,12 @@ use Illuminate\Http\Request;
 use Square\SquareClient;
 use Square\Models\Money;
 use Square\Models\CreatePaymentRequest;
-
 use Illuminate\Support\Facades\Log;
 use App\Models\Customer;
 use Illuminate\Support\Facades\DB;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Delivery;
-
 
 class SquarePayService
 {
@@ -67,6 +65,7 @@ class SquarePayService
             // === セッションからカート & 住所を取得 ===
             $cart = session('cart', []);
             $address = session('address', []);
+            $shipping_fee = session('shipping_fee');
             if (empty($cart)) {
                 throw new \Exception('カート情報が空です。');
             }
@@ -77,10 +76,12 @@ class SquarePayService
 
             // === 顧客作成 ===
             $customer = Customer::create([
-                'sei'        => $address['order_sei'] ?? 'ゲスト',
+                'company_name' => $address['company_name'] ?? '',
+                'department' => $address['department'] ?? '',
+                'sei'        => $address['order_sei'] ?? '',
                 'mei'        => $address['order_mei'] ?? '',
-                'email'      => $address['order_email'] ?? ($response['buyer']['email'] ?? 'guest_' . uniqid() . '@example.com'),
-                'phone'      => $address['order_phone'] ?? ($response['buyer']['phone'] ?? null),
+                'email'      => $address['order_email'] ?? $address['email'],
+                'phone'      => $address['order_phone'] ?? '',
                 'zip'        => $address['order_zip'] ?? null,
                 'input_add01' => $address['order_add01'] ?? null,
                 'input_add02' => $address['order_add02'] ?? null,
@@ -88,20 +89,24 @@ class SquarePayService
             ]);
 
             // === 配送先作成 ===
+            /*
             if (($address['same_as_orderer'] ?? '1') === '1') {
                 $delivery = Delivery::create($customer->toArray());
             } else {
-                $delivery = Delivery::create([
-                    'sei'        => $address['delivery_sei'] ?? '',
-                    'mei'        => $address['delivery_mei'] ?? '',
-                    'email'      => $address['delivery_email'] ?? '',
-                    'phone'      => $address['delivery_phone'] ?? '',
-                    'zip'        => $address['delivery_zip'] ?? '',
-                    'input_add01' => $address['delivery_add01'] ?? '',
-                    'input_add02' => $address['delivery_add02'] ?? '',
-                    'input_add03' => $address['delivery_add03'] ?? '',
-                ]);
-            }
+            */
+            $delivery = Delivery::create([
+                'company_name' => $address['company_name'] ?? '',
+                'department' => $address['department'] ?? '',
+                'sei'        => $address['delivery_sei'] ?? '',
+                'mei'        => $address['delivery_mei'] ?? '',
+                'email'      => $address['delivery_email'] ?? '',
+                'phone'      => $address['delivery_phone'] ?? '',
+                'zip'        => $address['delivery_zip'] ?? '',
+                'input_add01' => $address['delivery_add01'] ?? '',
+                'input_add02' => $address['delivery_add02'] ?? '',
+                'input_add03' => $address['delivery_add03'] ?? '',
+            ]);
+            //}
 
             // === 注文作成 ===
             $order = Order::create([
@@ -120,6 +125,7 @@ class SquarePayService
                 'amazon_chargeId' => $chargeId,
                 'status'         => Order::STATUS_AUTH, // 与信済
                 'corporate_customer_id'   => $corporate_customer_id,
+                'shipping_fee'   => $shipping_fee ?? 0
             ]);
 
             // === 注文明細作成 ===

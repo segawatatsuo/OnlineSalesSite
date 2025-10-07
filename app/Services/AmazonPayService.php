@@ -28,7 +28,6 @@ class AmazonPayService
         $this->client = new Client($this->config);
     }
 
-
     /**
      * 売上確定（Capture）
      */
@@ -159,6 +158,7 @@ class AmazonPayService
 
             // createPayload() で保存しておいた金額を取得
             $amount = session('payment_amount');
+            $shipping_fee = session('shipping_fee') ;
             // サービスクラスのメソッドで 金額と通貨 を生成
             $amount_jpy = $this->chargeAmount($amount);
 
@@ -181,6 +181,8 @@ class AmazonPayService
             // === セッションからカート & 住所を取得 ===
             $cart = session('cart', []);
             $address = session('address', []);
+
+
             if (empty($cart)) {
                 throw new \Exception('カート情報が空です。');
             }
@@ -191,10 +193,12 @@ class AmazonPayService
 
             // === 顧客作成 ===
             $customer = Customer::create([
-                'sei'        => $address['order_sei'] ?? 'ゲスト',
+                'company_name' => $address['order_company_name'] ?? '',
+                'department' => $address['order_department'] ?? '',
+                'sei'        => $address['order_sei'] ?? '',
                 'mei'        => $address['order_mei'] ?? '',
-                'email'      => $address['order_email'] ?? ($response['buyer']['email'] ?? 'guest_' . uniqid() . '@example.com'),
-                'phone'      => $address['order_phone'] ?? ($response['buyer']['phone'] ?? null),
+                'email'      => $address['order_email'] ?? $address['email'],
+                'phone'      => $address['order_phone'] ?? '',
                 'zip'        => $address['order_zip'] ?? null,
                 'input_add01' => $address['order_add01'] ?? null,
                 'input_add02' => $address['order_add02'] ?? null,
@@ -202,20 +206,24 @@ class AmazonPayService
             ]);
 
             // === 配送先作成 ===
+            /*
             if (($address['same_as_orderer'] ?? '1') === '1') {
                 $delivery = Delivery::create($customer->toArray());
             } else {
-                $delivery = Delivery::create([
-                    'sei'        => $address['delivery_sei'] ?? '',
-                    'mei'        => $address['delivery_mei'] ?? '',
-                    'email'      => $address['delivery_email'] ?? '',
-                    'phone'      => $address['delivery_phone'] ?? '',
-                    'zip'        => $address['delivery_zip'] ?? '',
-                    'input_add01' => $address['delivery_add01'] ?? '',
-                    'input_add02' => $address['delivery_add02'] ?? '',
-                    'input_add03' => $address['delivery_add03'] ?? '',
-                ]);
-            }
+            */
+            $delivery = Delivery::create([
+                'company_name' => $address['delivery_company_name'] ?? '',
+                'department' => $address['delivery_department'] ?? '',
+                'sei'        => $address['delivery_sei'] ?? '',
+                'mei'        => $address['delivery_mei'] ?? '',
+                'email'      => $address['delivery_email'] ?? '',
+                'phone'      => $address['delivery_phone'] ?? '',
+                'zip'        => $address['delivery_zip'] ?? '',
+                'input_add01' => $address['delivery_add01'] ?? '',
+                'input_add02' => $address['delivery_add02'] ?? '',
+                'input_add03' => $address['delivery_add03'] ?? '',
+            ]);
+            //}
 
             // === 注文作成 ===
             $order = Order::create([
@@ -228,12 +236,14 @@ class AmazonPayService
                 'your_request'   => $address['your_request'] ?? null,
                 'amazon_checkout_session_id' => $amazonCheckoutSessionId,
                 'amazon_charge_id' => $response['chargeId'] ?? null,
+                'shipping_fee'   => $shipping_fee ?? 0,
 
                 // ✅ ここを追加
                 'amazon_chargePermissionId' => $chargePermissionId,
                 'amazon_chargeId' => $chargeId,
                 'status'         => Order::STATUS_AUTH, // 与信済
                 'corporate_customer_id'   => $corporate_customer_id,
+
             ]);
 
             // === 注文明細作成 ===
