@@ -161,7 +161,7 @@ Route::prefix('corporate')->name('corporate.')->group(function () {
 
         if (!$email) {
             return redirect()
-                ->route('corporate.register')
+                ->route('register.create')
                 ->withErrors(['error' => 'セッションが切れました。もう一度登録してください。']);
         }
 

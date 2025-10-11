@@ -26,10 +26,6 @@ class CorporateCustomerController extends AdminController
     {
         $grid = new Grid(new CorporateCustomer());
 
-        /*
-        $grid->column('id', __('Id'));
-        $grid->column('user_id', __('User id'));
-        */
         $grid->column('order_company_name', __('注文者会社名'));
         $grid->column('order_department', __('注文者部署名'));
         $grid->column('order_sei', __('注文者姓'));
@@ -37,28 +33,7 @@ class CorporateCustomerController extends AdminController
         $grid->column('order_phone', __('注文者電話番号'));
         $grid->column('homepage', __('ホームページ'));
         $grid->column('email', __('注文者メールアドレス'));
-        /*
-        $grid->column('order_zip', __('Order zip'));
-        $grid->column('order_add01', __('Order add01'));
-        $grid->column('order_add02', __('Order add02'));
-        $grid->column('order_add03', __('Order add03'));
-        $grid->column('same_as_orderer', __('Same as orderer'));
-        $grid->column('delivery_company_name', __('Delivery company name'));
-        $grid->column('delivery_department', __('Delivery department'));
-        $grid->column('delivery_sei', __('Delivery sei'));
-        $grid->column('delivery_mei', __('Delivery mei'));
-        $grid->column('delivery_phone', __('Delivery phone'));
-        $grid->column('delivery_email', __('Delivery email'));
-        $grid->column('delivery_zip', __('Delivery zip'));
-        $grid->column('delivery_add01', __('Delivery add01'));
-        $grid->column('delivery_add02', __('Delivery add02'));
-        $grid->column('delivery_add03', __('Delivery add03'));
-        $grid->column('corporate_number', __('Corporate number'));
-        $grid->column('discount_rate', __('Discount rate'));
-        $grid->column('is_approved', __('Is approved'));
-        $grid->column('created_at', __('Created at'));
-        $grid->column('updated_at', __('Updated at'));
-        */
+
 
         return $grid;
     }
@@ -72,10 +47,7 @@ class CorporateCustomerController extends AdminController
     protected function detail($id)
     {
         $show = new Show(CorporateCustomer::findOrFail($id));
-        /*
-        $show->field('id', __('Id'));
-        $show->field('user_id', __('User id'));
-        */
+
         $show->field('order_company_name', __('注文者会社名'));
         $show->field('order_department', __('注文者部署名'));
         $show->field('order_sei', __('注文者姓'));

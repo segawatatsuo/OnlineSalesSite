@@ -56,8 +56,6 @@ class CorporateRegisterController extends Controller
                 'user_type' => 'corporate',
             ]);
 
-            //dd($input);
-
             // 2. 法人情報作成
             // お届け先情報が注文者情報と同じ場合、お届け先データを注文者データからコピー
             if (isset($input['same_as_orderer']) && $input['same_as_orderer'] == '1') {
@@ -84,8 +82,6 @@ class CorporateRegisterController extends Controller
                 $deliveryAdd02 = $input['delivery_add02'] ?? null;
                 $deliveryAdd03 = $input['delivery_add03'] ?? null;
             }
-
-
 
             CorporateCustomer::create([
                 'user_id' => $user->id,

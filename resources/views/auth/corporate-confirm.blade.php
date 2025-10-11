@@ -21,14 +21,13 @@
             border-bottom: none;
         }
 
-        @media (max-width: 768px) {
-            .a-button {
-                width: 100%;
-                max-width: 350px;
-                padding: 15px 100px;
-                font-size: 1rem;
-                margin-bottom: 15px;
-            }
+        /* 例：ボタンを中央に配置し、間に隙間を空ける場合 */
+        .button-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            /* 16px程度の隙間 */
         }
     </style>
 @endpush
@@ -76,19 +75,10 @@
 
 
 
-            {{-- ボタン 
-            <div class="text-center mt-4">
-                <a href="{{ route('corporate.register') }}" class="btn btn-secondary">戻る</a>
-                <form action="{{ route('corporate.register.store') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="a-button" style="border: none">登録</button>
-                </form>
-            </div>
-            --}}
 
             <div class="button-area">
 
-                <a href="{{ route('corporate.register') }}" class="btn btn-secondary">戻る</a>
+                <a href="{{ route('corporate.register.create') }}" class="btn btn-secondary">戻る</a>
 
                 <form action="{{ route('corporate.register.store') }}" method="POST" class="d-inline">
                     @csrf

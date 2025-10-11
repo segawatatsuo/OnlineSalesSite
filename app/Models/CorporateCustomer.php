@@ -43,4 +43,19 @@ class CorporateCustomer extends Model
         return $this->deliveryAddresses()->where('is_main', true)->first();
     }
 
+    /**
+     * 削除時に関連ユーザーも削除
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($customer) {
+            // 関連ユーザーを削除
+            if ($customer->user) {
+                $customer->user->delete();
+            }
+        });
+    }
+
 }
