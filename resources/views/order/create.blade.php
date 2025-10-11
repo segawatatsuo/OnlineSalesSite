@@ -39,43 +39,53 @@
         <form method="POST" action="{{ route('orders.confirm') }}" class="post-content">
             @csrf
 
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
             <main class="main">
                 <h1>注文者情報入力</h1>
                 <div class="h-adr">
                     <span class="p-country-name" style="display:none;">Japan</span>
                     <dl class="post-table flex-between">
-                        <dt>姓</dt>
+                        <dt>姓
+                            @error('order_sei')
+                                : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                            @enderror
+                        </dt>
                         <dd><input type="text" name="order_sei" class="form-control" placeholder="姓"
                                 value="{{ old('order_sei', $ordererData['sei'] ?? '') }}" /></dd>
                     </dl>
                     <dl class="post-table flex-between">
-                        <dt>名</dt>
+                        <dt>名
+                            @error('order_mei')
+                                : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                            @enderror
+                        </dt>
                         <dd><input type="text" name="order_mei" class="form-control" placeholder="名"
                                 value="{{ old('order_mei', $ordererData['mei'] ?? '') }}" /></dd>
                     </dl>
                     <dl class="post-table flex-between">
-                        <dt>電話番号</dt>
+                        <dt>電話番号
+                            @error('order_phone')
+                                : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                            @enderror
+                        </dt>
                         <dd><input type="text" name="order_phone" class="form-control" placeholder="090-999-0000"
                                 value="{{ old('order_phone', $ordererData['phone'] ?? '') }}" /></dd>
                     </dl>
                     <dl class="post-table flex-between">
-                        <dt>メールアドレス</dt>
+                        <dt>メールアドレス
+                            @error('order_email')
+                                : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                            @enderror
+                        </dt>
                         <dd><input type="text" name="order_email" class="form-control" placeholder="example@mail.com"
                                 value="{{ old('order_email', $ordererData['email'] ?? '') }}" /></dd>
                     </dl>
 
                     <dl class="post-table flex-between">
-                        <dt>郵便番号</dt>
+                        <dt>郵便番号
+                            @error('order_zip')
+                                : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                            @enderror
+                        </dt>
                         <dd>
                             <input type="text" name="order_zip" class="p-postal-code form-control input-half"
                                 placeholder="123-4567" value="{{ old('order_zip', $ordererData['zip'] ?? '') }}" />
@@ -83,27 +93,39 @@
                         </dd>
                     </dl>
                     <dl class="post-table flex-between">
-                        <dt>住所（都道府県）</dt>
+                        <dt>住所（都道府県）
+                            @error('order_add01')
+                                : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                            @enderror
+                        </dt>
                         <dd><input type="text" name="order_add01" class="p-region form-control" placeholder="○○県"
                                 value="{{ old('order_add01', $ordererData['input_add01'] ?? '') }}" /></dd>
                     </dl>
                     <dl class="post-table flex-between">
-                        <dt>住所（市区町村）</dt>
+                        <dt>住所（市区町村）
+                            @error('order_add02')
+                                : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                            @enderror
+                        </dt>
                         <dd><input type="text" name="order_add02" class="p-locality p-street-address form-control"
                                 placeholder="△△市□□町" value="{{ old('order_add02', $ordererData['input_add02'] ?? '') }}" />
                         </dd>
                     </dl>
                     <dl class="post-table flex-between">
-                        <dt>市区町村以降の住所</dt>
+                        <dt>市区町村以降の住所
+                            @error('order_add03')
+                                : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                            @enderror
+                        </dt>
                         <dd><input type="text" name="order_add03" class="p-extended-address form-control"
-                                placeholder="マンション名など"
+                                placeholder="番地・マンション名など"
                                 value="{{ old('order_add03', $ordererData['input_add03'] ?? '') }}" /></dd>
                     </dl>
 
                     <dl class="post-table flex-between">
                         <dt>お届け希望日</dt>
                         <dd><input type="date" name="delivery_date" class="form-control"
-                                placeholder="本日より3営業日以降になります(土日祝を除く)" value="" /></dd>
+                                placeholder="本日より3営業日以降になります(土日祝を除く)" value="" style="width: 150px" /></dd>
                     </dl>
 
                     <dl class="post-table flex-between">
@@ -153,31 +175,51 @@
                     <div class="h-adr">
                         <span class="p-country-name" style="display:none;">Japan</span>
                         <dl class="post-table flex-between">
-                            <dt>姓</dt>
+                            <dt>姓
+                                @error('delivery_sei')
+                                    : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                                @enderror
+                            </dt>
                             <dd><input type="text" name="delivery_sei" class="form-control" placeholder="姓"
                                     value="{{ old('delivery_sei', $ordererData['sei'] ?? '') }}" />
                             </dd>
                         </dl>
                         <dl class="post-table flex-between">
-                            <dt>名</dt>
+                            <dt>名
+                                @error('delivery_mei')
+                                    : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                                @enderror
+                            </dt>
                             <dd><input type="text" name="delivery_mei" class="form-control" placeholder="名"
                                     value="{{ old('delivery_mei', $ordererData['mei'] ?? '') }}" />
                             </dd>
                         </dl>
                         <dl class="post-table flex-between">
-                            <dt>電話番号</dt>
+                            <dt>電話番号
+                                @error('delivery_phone')
+                                    : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                                @enderror
+                            </dt>
                             <dd><input type="text" name="delivery_phone" class="form-control"
                                     placeholder="090-999-0000"
                                     value="{{ old('delivery_phone', $ordererData['phone'] ?? '') }}" /></dd>
                         </dl>
                         <dl class="post-table flex-between">
-                            <dt>メールアドレス</dt>
+                            <dt>メールアドレス
+                                @error('delivery_email')
+                                    : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                                @enderror
+                            </dt>
                             <dd><input type="text" name="delivery_email" class="form-control"
                                     placeholder="mail@example.com"
                                     value="{{ old('delivery_email', $ordererData['email'] ?? '') }}" /></dd>
                         </dl>
                         <dl class="post-table flex-between">
-                            <dt>郵便番号</dt>
+                            <dt>郵便番号
+                                @error('delivery_zip')
+                                    : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                                @enderror
+                            </dt>
                             <dd>
                                 <input type="text" name="delivery_zip" class="p-postal-code form-control input-half"
                                     placeholder="123-4567"
@@ -187,22 +229,34 @@
                             </dd>
                         </dl>
                         <dl class="post-table flex-between">
-                            <dt>住所（都道府県）</dt>
+                            <dt>住所（都道府県）
+                                @error('delivery_add01')
+                                    : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                                @enderror
+                            </dt>
                             <dd><input type="text" name="delivery_add01" class="p-region form-control"
                                     placeholder="○○県"
                                     value="{{ old('delivery_add01', $ordererData['input_add01'] ?? '') }}" /></dd>
                         </dl>
                         <dl class="post-table flex-between">
-                            <dt>住所（市区町村）</dt>
+                            <dt>住所（市区町村）
+                                @error('delivery_add02')
+                                    : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                                @enderror
+                            </dt>
                             <dd><input type="text" name="delivery_add02"
                                     class="p-locality p-street-address form-control" placeholder="△△市□□町"
                                     value="{{ old('delivery_add02', $ordererData['input_add02'] ?? '') }}" />
                             </dd>
                         </dl>
                         <dl class="post-table flex-between">
-                            <dt>市区町村以降の住所</dt>
+                            <dt>市区町村以降の住所
+                                @error('delivery_add03')
+                                    : <span style="color:red; font-size:0.9em;">{{ $message }}</span>
+                                @enderror
+                            </dt>
                             <dd><input type="text" name="delivery_add03" class="p-extended-address form-control"
-                                    placeholder="マンション名など"
+                                    placeholder="番地・マンション名など"
                                     value="{{ old('delivery_add03', $ordererData['input_add03'] ?? '') }}" /></dd>
                         </dl>
                     </div>

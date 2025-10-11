@@ -58,8 +58,8 @@
                             </a>
                         @endif
 
-                        @if (Route::has('corporate.register'))
-                            <a class="btn-link" href="{{ route('corporate.register') }}">
+                        @if (Route::has('corporate.register.create'))
+                            <a class="btn-link" href="{{ route('corporate.register.create') }}">
                                 {{ __('新規登録') }}
                             </a>
                         @endif

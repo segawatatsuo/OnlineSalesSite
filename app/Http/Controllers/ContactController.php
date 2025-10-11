@@ -9,19 +9,30 @@ use App\Models\CompanyInfo;
 
 class ContactController extends Controller
 {
-    public function showForm()
+    public function create()
     {
         return view('contact.form');
     }
 
-    public function submitForm(Request $request)
+    public function store(Request $request)
     {
-        $request->validate([
-            'name'    => 'required|string|max:100',
-            'email'   => 'required|email',
-            'message' => 'required|string|max:1000',
-        ]);
-
+        $request->validate(
+            [
+                'name'    => 'required|string|max:100',
+                'email'   => 'required|email',
+                'message' => 'required|string|max:1000',
+            ],
+            [
+                'required' => ':attributeは必須です。',
+                'email'    => ':attributeの形式が正しくありません。',
+                'max'      => ':attributeは:max文字以内で入力してください。',
+            ],
+            [
+                'name'    => 'お名前',
+                'email'   => 'メールアドレス',
+                'message' => 'お問い合わせ内容',
+            ]
+        );
         // CompanyInfoモデルを使ってメールアドレス取得
         $toEmail = CompanyInfo::where('key', 'contact-mail')->value('value');
 

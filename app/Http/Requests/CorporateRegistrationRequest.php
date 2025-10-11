@@ -60,16 +60,16 @@ class CorporateRegistrationRequest extends FormRequest
 
             // 注文者情報（法人取引会員情報）
             'order_company_name' => ['required', 'string', 'max:255'],
-            'order_department' => ['nullable', 'string', 'max:255'],//部署名
+            'order_department' => ['required', 'string', 'max:255'],//部署名
             'order_sei' => ['required', 'string', 'max:255'], // 姓
             'order_mei' => ['required', 'string', 'max:255'], // 名
             'order_phone' => ['required', 'string', 'regex:/^\d{2,4}-\d{2,4}-\d{3,4}$/', 'max:20'], // ハイフンを含む電話番号形式
-            'homepage' => ['nullable', 'url', 'max:255'], // URL形式、任意
+            'homepage' => ['required', 'url', 'max:255'], // URL形式
             //'order_email' => ['required', 'string', 'email', 'max:255'], // メール形式
             'order_zip' => ['required', 'string', 'regex:/^\d{3}-\d{4}$/'], // 郵便番号形式
             'order_add01' => ['required', 'string', 'max:255'], // 都道府県
             'order_add02' => ['required', 'string', 'max:255'], // 市区町村
-            'order_add03' => ['nullable', 'string', 'max:255'], // 市区町村以降の住所（任意）
+            'order_add03' => ['required', 'string', 'max:255'], // 市区町村以降の住所（任意）
 
             // お届け先情報（same_as_orderer が '0' の場合に必須）
             // 'same_as_orderer' が '0' (チェックされていない) の場合のみ以下のフィールドを必須にします。
@@ -84,7 +84,7 @@ class CorporateRegistrationRequest extends FormRequest
             'delivery_zip' => ['required_if:same_as_orderer,0', 'string', 'regex:/^\d{3}-\d{4}$/'],
             'delivery_add01' => ['required_if:same_as_orderer,0', 'string', 'max:255'],
             'delivery_add02' => ['required_if:same_as_orderer,0', 'string', 'max:255'],
-            'delivery_add03' => ['nullable', 'string', 'max:255'], // お届け先の市区町村以降の住所は任意
+            'delivery_add03' => ['required_if:same_as_orderer,0', 'string', 'max:255'], // お届け先の市区町村以降の住所は任意
         ];
     }
 
@@ -103,6 +103,8 @@ class CorporateRegistrationRequest extends FormRequest
             'email.max' => 'メールアドレスは:max文字以内で入力してください。',
             'email.unique' => 'このメールアドレスは既に使用されています。',
 
+            'homepage.required' => 'ホームページは必ず入力してください。',
+
             'password.required' => 'パスワードは必ず入力してください。',
             'password.string' => 'パスワードは文字列で入力してください。',
             'password.min' => 'パスワードは:min文字以上で入力してください。',
@@ -112,6 +114,11 @@ class CorporateRegistrationRequest extends FormRequest
             'order_company_name.required' => '会社名は必ず入力してください。',
             'order_company_name.string' => '会社名は文字列で入力してください。',
             'order_company_name.max' => '会社名は:max文字以内で入力してください。',
+
+            'order_department.required' => '部署名は必ず入力してください。',
+            'order_department.string' => '部署名は文字列で入力してください。',
+            'order_department.max' => '部署名は:max文字以内で入力してください。',
+
 
             'order_sei.required' => 'ご担当者姓は必ず入力してください。',
             'order_sei.string' => 'ご担当者姓は文字列で入力してください。',
@@ -146,6 +153,7 @@ class CorporateRegistrationRequest extends FormRequest
             'order_add02.string' => '住所（市区町村）は文字列で入力してください。',
             'order_add02.max' => '住所（市区町村）は:max文字以内で入力してください。',
 
+            'order_add03.required' => '市区町村以降の住所は必ず入力してください。',
             'order_add03.string' => '市区町村以降の住所は文字列で入力してください。',
             'order_add03.max' => '市区町村以降の住所は:max文字以内で入力してください。',
 
@@ -184,6 +192,7 @@ class CorporateRegistrationRequest extends FormRequest
             'delivery_add02.string' => 'お届け先の住所（市区町村）は文字列で入力してください。',
             'delivery_add02.max' => 'お届け先の住所（市区町村）は:max文字以内で入力してください。',
 
+            'delivery_add03.required_if' => 'お届け先が注文者情報と異なる場合、市区町村以降の住所は必ず入力してください。',
             'delivery_add03.string' => 'お届け先の市区町村以降の住所は文字列で入力してください。',
             'delivery_add03.max' => 'お届け先の市区町村以降の住所は:max文字以内で入力してください。',
         ];

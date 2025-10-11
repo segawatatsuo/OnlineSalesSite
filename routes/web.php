@@ -102,22 +102,6 @@ Route::prefix('orders')->name('orders.')->group(function () {
     Route::get('modify/{type}', [OrderController::class, 'modify'])->name('modify');
 });
 
-
-/*
-// ★★★ カスタムメール認証ルートを Auth::routes() より前に定義 ★★★
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
-
-// 個人ユーザー向けのメール確認ルート
-Route::get('/email/verify/{id}/{hash}', [VerificationController::class, '__invoke'])
-    ->name('verification.verify'); // 'signed' ミドルウェアも削除
-
-Route::post('/email/resend', [VerificationController::class, 'resend'])
-    ->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
-*/
-
-
 /*
 |--------------------------------------------------------------------------
 | メール認証(個人ユーザー)
@@ -141,53 +125,30 @@ Route::prefix('email')->name('verification.')->middleware('auth')->group(functio
 
 // 法人ユーザー向けのメール確認ルート
 Route::get('/corporate/email/verify/{id}/{hash}', [VerificationController::class, '__invoke'])
-    ->name('corporate.verification.verify'); // 'signed' ミドルウェアも削除
-
-
-// 認証関連
-// CustomRegisterControllerによるカスタム登録フローを優先するため、
-// Auth::routes() で生成されるデフォルトの /register を無効にし、
-// 他の認証機能（ログイン、パスワードリセット）のみを有効にします。
-// ★★★ verify => false に変更してカスタム認証ルートを使用 ★★★
-
+    ->name('corporate.verification.verify');
 
 
 /*
-Route::get('/register', [CustomRegisterController::class, 'showForm'])->name('register');
-Route::post('/register/confirm', [CustomRegisterController::class, 'confirm'])->name('register.confirm');
-Route::post('/register/store', [CustomRegisterController::class, 'store'])->name('register.store');
+|--------------------------------------------------------------------------
+| 個人会員登録
+|--------------------------------------------------------------------------
 */
 /*
-|--------------------------------------------------------------------------
-| 個人ユーザー登録
-|--------------------------------------------------------------------------
-*/
-
 Route::prefix('register')->name('register.')->group(function () {
     Route::get('/', [CustomRegisterController::class, 'showForm'])->name('index');
     Route::post('confirm', [CustomRegisterController::class, 'confirm'])->name('confirm');
     Route::post('store', [CustomRegisterController::class, 'store'])->name('store');
 });
-
-
-
-
-// カスタム(法人取引会員)登録ルート
-/*
-Route::get('/corporate/register', [CorporateRegisterController::class, 'showForm'])->name('corporate.register');
-Route::post('/corporate/register/confirm', [CorporateRegisterController::class, 'confirm'])->name('corporate.register.confirm');
-Route::post('/corporate/register', [CorporateRegisterController::class, 'store'])->name('corporate.register.store');
 */
-
 /*
 |--------------------------------------------------------------------------
-| 法人ユーザー登録
+| 法人取引会員登録
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('corporate')->name('corporate.')->group(function () {
     // 登録フォーム
-    Route::get('register', [CorporateRegisterController::class, 'showForm'])->name('register');
+    Route::get('register', [CorporateRegisterController::class, 'create'])->name('register.create');
     Route::post('register/confirm', [CorporateRegisterController::class, 'confirm'])->name('register.confirm');
     Route::post('register', [CorporateRegisterController::class, 'store'])->name('register.store');
 
@@ -218,7 +179,7 @@ Route::prefix('corporate')->name('corporate.')->group(function () {
 
 //法人取引会員登録でのメール送信しました確認画面
 Route::get('/corporate/register/confirm_message', function () {
-    return view('auth.confirm_message'); // 任意の Blade テンプレート
+    return view('auth.confirm_message');
 })->name('corporate.register.confirm_message');
 
 
@@ -230,18 +191,6 @@ Route::middleware(['auth', 'verified'])->prefix('mypage')->name('mypage.')->grou
     Route::get('password', [MypageController::class, 'editPassword'])->name('password.edit');
     Route::post('password', [MypageController::class, 'updatePassword'])->name('password.update');
 });
-
-/*
-// 管理者ルート（ログイン必須）
-Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function () {
-    Route::resource('products', AdminProductController::class);
-    // 管理者登録（ポリシー使用）
-    Route::get('register', [AdminRegisterController::class, 'create'])->middleware('can:admin')->name('register');
-    Route::post('register', [AdminRegisterController::class, 'store'])->middleware('can:admin');
-    // 商品画像削除
-    Route::delete('product-images/{id}', [ProductImageJaController::class, 'destroy'])->name('product_images.destroy');
-});
-*/
 
 /*
 |--------------------------------------------------------------------------
@@ -280,26 +229,16 @@ Route::middleware(['cart.not.empty', 'prevent.back.history'])->group(function ()
 });
 
 /*
-//お問い合わせフォーム
-Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.form');
-Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact.submit');
-Route::get('/contact/complete', [ContactController::class, 'complete'])->name('contact.complete');
-*/
-
-
-/*
 |--------------------------------------------------------------------------
 | お問い合わせ
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('contact')->name('contact.')->group(function () {
-    Route::get('/', [ContactController::class, 'showForm'])->name('form');
-    Route::post('/', [ContactController::class, 'submitForm'])->name('submit');
+    Route::get('/', [ContactController::class, 'create'])->name('form');
+    Route::post('/', [ContactController::class, 'store'])->name('store');
     Route::get('complete', [ContactController::class, 'complete'])->name('complete');
 });
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -313,14 +252,6 @@ Route::controller(PageController::class)->group(function () {
 });
 
 /*
-// ホーム画面（ログイン後のリダイレクト用）
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/thank-you', function () {
-    return view('thank-you');
-})->name('order.thank-you');
-*/
-
-/*
 |--------------------------------------------------------------------------
 | その他のページ
 |--------------------------------------------------------------------------
@@ -331,30 +262,6 @@ Route::get('home', [HomeController::class, 'index'])->name('home');
 Route::get('thank-you', function () {
     return view('thank-you');
 })->name('order.thank-you');
-
-
-/*
-// 法人ユーザー向けのメール再送信ルート
-Route::post('/corporate/resend-verification', function () {
-    $email = session('resent_email');
-
-    if (!$email) {
-        return redirect()->route('corporate.register')->withErrors(['error' => 'セッションが切れました。もう一度登録してください。']);
-    }
-
-    $user = User::where('email', $email)->first();
-
-    if ($user && !$user->hasVerifiedEmail()) {
-        event(new Registered($user)); // ← ここで再送
-        return back()->with('status', '認証メールを再送信しました。');
-    }
-
-    return back()->withErrors(['error' => 'メール再送信に失敗しました。']);
-})->name('corporate.verification.resend');
-*/
-
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -374,7 +281,6 @@ Route::prefix('amazon-pay')->name('amazon-pay.')->group(function () {
     /*動作確認*/
     Route::get('/captureOrder', [AmazonPayController::class, 'captureOrder'])->name('captureOrder');
 });
-
 
 /*
 |--------------------------------------------------------------------------
@@ -453,37 +359,6 @@ Route::get('/admin/api/classifications', function (Request $request) {
 |--------------------------------------------------------------------------
 */
 
-/*
-// 住所一覧
-Route::get(
-    '/corporate_customers/{id}/addresses/{type}',
-    [CorporateCustomerAddressController::class, 'edit']
-)
-    ->name('corporate_customers.addresses.edit');
-
-// 新規登録画面
-Route::get(
-    '/corporate_customers/{id}/addresses/{type}/create',
-    [CorporateCustomerAddressController::class, 'create']
-)
-    ->name('corporate_customers.addresses.create');
-
-// 登録処理
-Route::post(
-    '/corporate_customers/{id}/addresses',
-    [CorporateCustomerAddressController::class, 'store']
-)
-    ->name('corporate_customers.addresses.store');
-
-// メイン切り替え
-Route::post(
-    '/corporate_customers/{id}/addresses/{addressId}/select-main',
-    [CorporateCustomerAddressController::class, 'selectMain']
-)
-    ->name('corporate_customers.addresses.selectMain');
-*/
-
-// 法人顧客住所管理
 Route::middleware(['auth'])->group(function () {
     // 住所一覧
     Route::get(

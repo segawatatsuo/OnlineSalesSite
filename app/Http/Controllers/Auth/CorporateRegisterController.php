@@ -19,11 +19,11 @@ class CorporateRegisterController extends Controller
         $this->middleware('guest');
     }
 
-    public function showForm()
+    /*「入力フォーム表示」は create()*/
+    public function create()
     {
         return view('auth.corporate-register');
     }
-
     /**
      * 法人取引会員登録の確認ページを表示します。
      *
