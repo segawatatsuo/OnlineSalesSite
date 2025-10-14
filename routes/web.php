@@ -31,6 +31,8 @@ use Square\Environments;
 use Illuminate\Http\Request;
 use App\Models\Categorization;
 use App\Http\Controllers\CorporateCustomerAddressController;
+use App\Http\Controllers\DeliveryAddressController;
+use App\Http\Controllers\CorporateCustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -360,12 +362,20 @@ Route::get('/admin/api/classifications', function (Request $request) {
 */
 
 Route::middleware(['auth'])->group(function () {
-    // 住所一覧
+    // 注文者住所修正
     Route::get(
         '/corporate_customers/{id}/addresses/{type}',
         [CorporateCustomerAddressController::class, 'edit']
     )
         ->name('corporate_customers.addresses.edit');
+
+    // お届け先住所修正
+    Route::get(
+        '/corporate_deliverys/{id}/addresses/{type}',
+        [CorporateCustomerAddressController::class, 'edit_deliverys']
+    )
+        ->name('corporate_deliverys.addresses.edit');
+
 
     // 新規登録画面
     Route::get(
@@ -387,4 +397,22 @@ Route::middleware(['auth'])->group(function () {
         [CorporateCustomerAddressController::class, 'selectMain']
     )
         ->name('corporate_customers.addresses.selectMain');
+});
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Delivery Address Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('corporate-customers/{corporateCustomerId}')->group(function () {
+    Route::get('delivery-addresses', [DeliveryAddressController::class, 'index'])->name('delivery-addresses.index');
+    Route::post('delivery-addresses', [DeliveryAddressController::class, 'store'])->name('delivery-addresses.store');
+    Route::delete('delivery-addresses/{addressId}', [DeliveryAddressController::class, 'destroy'])->name('delivery-addresses.destroy');
+    Route::post('delivery-addresses/{addressId}/set-default', [DeliveryAddressController::class, 'setDefault'])->name('delivery-addresses.setDefault');
+
+    // 👇 ここを追加
+    Route::post('update', [CorporateCustomerController::class, 'update'])->name('corporate-customers.update');
 });

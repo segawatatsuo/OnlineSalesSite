@@ -25,8 +25,8 @@ class CustomVerifyEmail extends VerifyEmail
         // 署名付き確認URLを生成
         $verificationUrl = $this->verificationUrl($notifiable);
 
-        return (new MailMessage)
-            ->subject('CCメディコ会員登録確認メール')
+        return (new MailMessage())
+            ->subject('CCメディコ法人会員登録確認メール')
             ->greeting("{$company} {$department} {$name} 様")
             ->line('CCメディコ法人会員ご登録ありがとうございます。以下のボタンをクリックして、登録を完了してください。')
             ->action('会員登録', $verificationUrl)

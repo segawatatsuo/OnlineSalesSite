@@ -39,6 +39,7 @@ class CorporateRegisterController extends Controller
 
     public function store(Request $request)
     {
+        // セッションから登録データを取得
         $input = $request->session()->get('corporate_register_data');
 
         if (!$input) {
@@ -48,15 +49,41 @@ class CorporateRegisterController extends Controller
         DB::beginTransaction();
 
         try {
-            // 1. ユーザー作成
+            // 1. ユーザーアカウント作成
             $user = User::create([
                 'email' => $input['email'],
                 'password' => Hash::make($input['password']),
                 'user_type' => 'corporate',
             ]);
 
-            // 2. 法人基本情報作成（注文者情報のみ）
-            $corporateCustomer = CorporateCustomer::create([
+            // 2. 法人情報作成
+            // お届け先情報が注文者情報と同じ場合、お届け先データを注文者データからコピー
+            if (isset($input['same_as_orderer']) && $input['same_as_orderer'] == '1') {
+                $delivery_company_name = $input['order_company_name'];
+                $delivery_department = $input['order_department'] ?? null;
+                $deliverySei = $input['order_sei'];
+                $deliveryMei = $input['order_mei'];
+                $deliveryPhone = $input['order_phone'];
+                //$deliveryEmail = $input['email'];
+                $deliveryZip = $input['order_zip'];
+                $deliveryAdd01 = $input['order_add01'];
+                $deliveryAdd02 = $input['order_add02'];
+                $deliveryAdd03 = $input['order_add03'];
+            } else {
+                // same_as_orderer が '0' の場合、または存在しない場合はお届け先データを使用
+                $delivery_company_name = $input['delivery_company_name'] ?? null;
+                $delivery_department = $input['delivery_department'] ?? null;
+                $deliverySei = $input['delivery_sei'] ?? null;
+                $deliveryMei = $input['delivery_mei'] ?? null;
+                $deliveryPhone = $input['delivery_phone'] ?? null;
+                //$deliveryEmail = $input['email'] ?? null;
+                $deliveryZip = $input['delivery_zip'] ?? null;
+                $deliveryAdd01 = $input['delivery_add01'] ?? null;
+                $deliveryAdd02 = $input['delivery_add02'] ?? null;
+                $deliveryAdd03 = $input['delivery_add03'] ?? null;
+            }
+
+            CorporateCustomer::create([
                 'user_id' => $user->id,
                 'order_company_name' => $input['order_company_name'],
                 'order_department' => $input['order_department'] ?? null,
@@ -65,63 +92,55 @@ class CorporateRegisterController extends Controller
                 'order_phone' => $input['order_phone'] ?? null,
                 'homepage' => $input['homepage'] ?? null,
                 'email' => $input['email'],
+
                 'order_zip' => $input['order_zip'],
                 'order_add01' => $input['order_add01'] ?? null,
                 'order_add02' => $input['order_add02'] ?? null,
                 'order_add03' => $input['order_add03'] ?? null,
-                'discount_rate' => 0,
-                'is_approved' => true,
+
                 'same_as_orderer' => $input['same_as_orderer'],
 
-            ]);
+                'delivery_company_name' => $delivery_company_name,
+                'delivery_department' => $delivery_department,
+                'delivery_sei' => $deliverySei,
+                'delivery_mei' => $deliveryMei,
+                'delivery_phone' => $deliveryPhone,
+                //'delivery_email' => $deliveryEmail,
+                'delivery_zip' => $deliveryZip,
+                'delivery_add01' => $deliveryAdd01,
+                'delivery_add02' => $deliveryAdd02,
+                'delivery_add03' => $deliveryAdd03,
 
-            // 3. お届け先情報登録
-            if (isset($input['same_as_orderer']) && $input['same_as_orderer'] == '1') {
-                // 注文者情報をコピーしてデフォルト送付先にする
-                $corporateCustomer->deliveryAddresses()->create([
-                    'company_name' => $input['order_company_name'],
-                    'department' => $input['order_department'] ?? null,
-                    'sei' => $input['order_sei'],
-                    'mei' => $input['order_mei'],
-                    'phone' => $input['order_phone'],
-                    'email' => $input['email'],
-                    'zip' => $input['order_zip'],
-                    'add01' => $input['order_add01'],
-                    'add02' => $input['order_add02'],
-                    'add03' => $input['order_add03'],
-                    'is_default' => true,
-                ]);
-            } else {
-                // フォームから入力された送付先を登録
-                $corporateCustomer->deliveryAddresses()->create([
-                    'company_name' => $input['delivery_company_name'] ?? null,
-                    'department' => $input['delivery_department'] ?? null,
-                    'sei' => $input['delivery_sei'] ?? null,
-                    'mei' => $input['delivery_mei'] ?? null,
-                    'phone' => $input['delivery_phone'] ?? null,
-                    'email' => $input['delivery_email'] ?? $input['email'],
-                    'zip' => $input['delivery_zip'] ?? null,
-                    'add01' => $input['delivery_add01'] ?? null,
-                    'add02' => $input['delivery_add02'] ?? null,
-                    'add03' => $input['delivery_add03'] ?? null,
-                    'is_default' => true,
-                ]);
-            }
+                'discount_rate' => 0, // 初期値は0%、管理者が後で設定
+                'is_approved' => true, // 初期状態は承認
+            ]);
 
             DB::commit();
 
+            // 登録イベントをディスパッチ
             event(new Registered($user));
+
+            // ← ここでメールアドレスをセッションに保存（再送時に使う）
             $request->session()->put('resent_email', $input['email']);
+
+            // セッションデータを削除
             $request->session()->forget('corporate_register_data');
 
+            // 承認待ちメッセージと共にリダイレクト
+            /*
+            return redirect()->route('verification.notice')
+                ->with('status', '法人登録が完了しました。メール認証後、管理者による承認をお待ちください。');
+            */
             return redirect()->route('corporate.register.confirm_message');
 
+
         } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => '登録中にエラーが発生しました。']);
+            DB::rollback();
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['error' => '登録処理中にエラーが発生しました。予期せぬエラーが発生しました。時間をおいて再度お試しください。']);
         }
     }
-
 
     // 既存の個人ユーザー登録用（元のコントローラーを残す場合）
     public function showIndividualForm()

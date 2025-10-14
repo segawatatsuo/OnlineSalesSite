@@ -20,6 +20,7 @@ use App\Mail\OrderThanksMail;
 use App\Mail\OrderConfirmed;
 use App\Mail\OrderNotification;
 use App\Http\Requests\OrderCustomerRequest;
+use App\Models\DeliveryAddress;
 
 class OrderController extends Controller
 {
@@ -32,6 +33,63 @@ class OrderController extends Controller
         $this->shippingFeeService = $shippingFeeService;
     }
 
+    /*
+        public function create(Request $request, CartService $cartService)
+        {
+            $cart = session()->get('cart', []);
+
+            if (empty($cart)) {
+                return redirect()->route('top')->with('warning', 'カートが空です。');
+            }
+
+            $deliveryTimes = DeliveryTime::pluck('time'); // 配送時間帯のtimeカラムの値のみを取得
+
+            $user = auth()->user();
+
+            if ($user && $user->user_type === 'corporate') {
+
+
+                // データベースをリロードして最新のデータを取得
+                $user->corporateCustomer->refresh();
+
+
+                $prefecture = $user->corporateCustomer->delivery_add01;
+                $corporat_customer = $user->corporateCustomer;
+                $corporate_customer_id = $user->corporateCustomer->id;
+
+                session(['address' => $corporat_customer]);
+                session(['corporate_customer_id' => $corporate_customer_id]);
+
+
+                $cart = $this->cartService->getCartItems($user, $prefecture);
+                session(['shipping_fee' => $cart['shipping_fee']]);
+
+                $getCartItems = $this->cartService->getCartItems(null, $prefecture);
+                return view('order.corporate_confirm', [
+                    'user' => $user,
+                    'cart' => $cart['items'],
+                    'subtotal' => $cart['subtotal'],
+                    'shipping_fee' => $cart['shipping_fee'],
+                    'total' => $cart['total'],
+                    'deliveryTimes' => $deliveryTimes,
+                    'getCartItems' => $getCartItems
+                ]);
+            }
+
+            $prefecture = null;
+            $cart = $this->cartService->getCartItems($user, $prefecture);
+            session(['shipping_fee' => $cart['shipping_fee']]);
+
+
+            return view('order.create', [
+                'items' => $cart['items'],
+                'subtotal' => $cart['subtotal'],
+                'shipping_fee' => $cart['shipping_fee'],
+                'total' => $cart['total'],
+                'deliveryTimes' => $deliveryTimes,
+            ]);
+        }
+    */
     public function create(Request $request, CartService $cartService)
     {
         $cart = session()->get('cart', []);
@@ -40,53 +98,61 @@ class OrderController extends Controller
             return redirect()->route('top')->with('warning', 'カートが空です。');
         }
 
-        $deliveryTimes = DeliveryTime::pluck('time'); // 配送時間帯のtimeカラムの値のみを取得
-
+        $deliveryTimes = DeliveryTime::pluck('time');
         $user = auth()->user();
 
         if ($user && $user->user_type === 'corporate') {
 
+            // 最新データを取得
+            //$corporateCustomer = $user->corporateCustomer->refresh();
+            $corporateCustomer = Auth::user()->corporateCustomer()->with('orders')->first();
+            $corporate_customer_id = $corporateCustomer->id;
 
-            // データベースをリロードして最新のデータを取得
-            $user->corporateCustomer->refresh();
+            // 🚩 デフォルトお届け先を取得（なければ最初の住所）
+            $defaultAddress = $corporateCustomer->defaultDeliveryAddress ?? $corporateCustomer->deliveryAddresses()->first();
+
+            // 🚩 住所セッションをセット
+            session([
+                /*'address' => $defaultAddress,*/
+                'address' => $corporateCustomer,
+                'corporate_customer_id' => $corporate_customer_id,
+            ]);
+
+            // 配送料計算に使う都道府県
+            $prefecture = $defaultAddress ? $defaultAddress->add01 : $corporateCustomer->order_add01;
+
+            // カート情報を取得
+            $cartData = $cartService->getCartItems($user, $prefecture);
+            session(['shipping_fee' => $cartData['shipping_fee']]);
 
 
-            $prefecture = $user->corporateCustomer->delivery_add01;
-            $corporat_customer = $user->corporateCustomer;
-            $corporate_customer_id = $user->corporateCustomer->id;
-
-            session(['address' => $corporat_customer]);
-            session(['corporate_customer_id' => $corporate_customer_id]);
-
-
-            $cart = $this->cartService->getCartItems($user, $prefecture);
-            session(['shipping_fee' => $cart['shipping_fee']]);
-
-            $getCartItems = $this->cartService->getCartItems(null, $prefecture);
             return view('order.corporate_confirm', [
                 'user' => $user,
-                'cart' => $cart['items'],
-                'subtotal' => $cart['subtotal'],
-                'shipping_fee' => $cart['shipping_fee'],
-                'total' => $cart['total'],
+                'corporateCustomer' => $corporateCustomer,
+                'deliveryAddresses' => $corporateCustomer->deliveryAddresses, // 全住所
+                'selectedAddress' => $defaultAddress, // デフォルト住所
+                'cart' => $cartData['items'],
+                'subtotal' => $cartData['subtotal'],
+                'shipping_fee' => $cartData['shipping_fee'],
+                'total' => $cartData['total'],
                 'deliveryTimes' => $deliveryTimes,
-                'getCartItems' => $getCartItems
             ]);
         }
 
+        // 個人顧客用（変更なし）
         $prefecture = null;
-        $cart = $this->cartService->getCartItems($user, $prefecture);
-        session(['shipping_fee' => $cart['shipping_fee']]);
-
+        $cartData = $cartService->getCartItems($user, $prefecture);
+        session(['shipping_fee' => $cartData['shipping_fee']]);
 
         return view('order.create', [
-            'items' => $cart['items'],
-            'subtotal' => $cart['subtotal'],
-            'shipping_fee' => $cart['shipping_fee'],
-            'total' => $cart['total'],
+            'items' => $cartData['items'],
+            'subtotal' => $cartData['subtotal'],
+            'shipping_fee' => $cartData['shipping_fee'],
+            'total' => $cartData['total'],
             'deliveryTimes' => $deliveryTimes,
         ]);
     }
+
 
     public function confirm(OrderCustomerRequest $request) //FormRequestを依存注入する
     {

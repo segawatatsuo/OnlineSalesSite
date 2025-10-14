@@ -9,13 +9,46 @@ class CorporateCustomer extends Model
 {
     use HasFactory;
 
+    protected $table = 'corporate_customers';
+
     protected $guarded = ['id'];
 
-    // --- リレーション ---
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+    public function addresses()
+    {
+        return $this->hasMany(CorporateCustomerAddress::class);
+    }
+
+    public function orderAddresses()
+    {
+        return $this->addresses()->where('type', 'order');
+    }
+
+    /*
+    public function deliveryAddresses()
+    {
+        return $this->addresses()->where('type', 'delivery');
+    }
+    */
+    public function mainOrderAddress()
+    {
+        return $this->orderAddresses()->where('is_main', true)->first();
+    }
+
+    public function mainDeliveryAddress()
+    {
+        return $this->deliveryAddresses()->where('is_main', true)->first();
+    }
+
+
+
+
+
+
 
     public function deliveryAddresses()
     {
@@ -26,26 +59,28 @@ class CorporateCustomer extends Model
     {
         return $this->hasOne(DeliveryAddress::class)->where('is_default', true);
     }
-
+    // 既存の内容の下あたりに追加
     public function orders()
     {
         return $this->hasMany(Order::class, 'corporate_customer_id');
     }
 
-    public function addresses()
-    {
-        return $this->hasMany(CorporateCustomerAddress::class);
-    }
 
-    // --- 関連ユーザー削除処理 ---
+    /**
+     * 削除時に関連ユーザーも削除
+     */
     protected static function boot()
     {
         parent::boot();
 
         static::deleting(function ($customer) {
+            // 関連ユーザーを削除
             if ($customer->user) {
                 $customer->user->delete();
             }
         });
     }
+
+
+
 }

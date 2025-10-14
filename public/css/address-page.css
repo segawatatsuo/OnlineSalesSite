@@ -632,35 +632,51 @@ body {
 
 .a-button {
     display: block;
-    /* ブロック要素にして中央揃えしやすく */
     width: fit-content;
-    /* 内容に合わせて幅を調整 */
     margin: 30px auto 0;
-    /* 上部のマージンと中央揃え */
     padding: 18px 40px;
-    /* ボタンのパディングを調整 */
     font-size: 1.2rem;
-    /* フォントサイズを調整 */
     font-weight: 600;
     border-radius: 12px;
-    /*background: linear-gradient(135deg, #5e6d8a 0%, #4a546e 100%);
-            color: white;*/
     background-color: #FFD814;
     color: #0f1111;
     cursor: pointer;
-    /*
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(94, 109, 138, 0.2);
-            */
 }
 
 .a-button:hover {
-    /*
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(94, 109, 138, 0.3);
-            */
     background-color: #F7CA00;
 }
+
+.b-button {
+    display: block;
+    width: fit-content;
+    margin: 30px auto 0;
+    padding: 18px 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 12px;
+    background-color: #dadada;
+    color: #0f1111;
+    cursor: pointer;
+}
+
+.b-button:hover {
+    background-color: #acacac;
+}
+
+
+
+.form-actions {
+    display: flex;
+    /* 横並び */
+    justify-content: center;
+    /* 中央寄せ */
+    gap: 10px;
+    /* ボタンの間隔 */
+    margin-top: 20px;
+    /* 任意：上に余白 */
+}
+
 
 /* レスポンシブデザイン */
 @media (max-width: 768px) {
@@ -784,6 +800,13 @@ body {
         padding: 15px 20px;
         font-size: 1rem;
     }
+
+    .b-button {
+        width: 100%;
+        padding: 15px 20px;
+        font-size: 1rem;
+    }
+
 }
 
 @media (max-width: 480px) {

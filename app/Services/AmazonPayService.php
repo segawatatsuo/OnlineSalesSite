@@ -181,7 +181,7 @@ class AmazonPayService
             // === セッションからカート & 住所を取得 ===
             $cart = session('cart', []);
             $address = session('address', []);
-
+            //dd($address);
 
             if (empty($cart)) {
                 throw new \Exception('カート情報が空です。');

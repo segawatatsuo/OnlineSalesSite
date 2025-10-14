@@ -6,23 +6,21 @@ use App\Models\CorporateCustomer;
 use App\Models\CorporateCustomerAddress;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreAddressRequest;
+use App\Models\Delivery;
+use App\Models\DeliveryAddress;
 
 class CorporateCustomerAddressController extends Controller
 {
     /**
-     * 住所一覧表示
+     * 住所修正
      */
     public function edit($corporateCustomerId, $type)
     {
-        \Log::info('CorporateCustomerAddressController@edit called', [
-            'id' => $corporateCustomerId,
-            'type' => $type
-        ]);
-
         $customer = CorporateCustomer::findOrFail($corporateCustomerId);
+        $delivery = DeliveryAddress::where('corporate_customer_id', $customer->id)->where('is_default', 1)->first();
         $addresses = $customer->addresses()->where('type', $type)->get();
 
-        return view('corporate_customers.addresses.index', compact('customer', 'type', 'addresses'));
+        return view('order.modify_address', compact('customer', 'type', 'addresses', 'delivery'));
     }
 
     /**
@@ -30,6 +28,7 @@ class CorporateCustomerAddressController extends Controller
      */
     public function create($corporateCustomerId, $type)
     {
+
         $customer = CorporateCustomer::findOrFail($corporateCustomerId);
 
         return view('corporate_customers.addresses.create', compact('customer', 'type'));
