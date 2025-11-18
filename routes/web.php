@@ -258,7 +258,7 @@ Route::controller(PageController::class)->group(function () {
 | その他のページ
 |--------------------------------------------------------------------------
 */
-// ホーム画面（ログイン後のリダイレクト用）
+// 法人会員ホーム画面（ログイン後のリダイレクト用）
 Route::get('home', [HomeController::class, 'index'])->name('home');
 
 Route::get('thank-you', function () {
@@ -415,4 +415,6 @@ Route::prefix('corporate-customers/{corporateCustomerId}')->group(function () {
 
     // 👇 ここを追加
     Route::post('update', [CorporateCustomerController::class, 'update'])->name('corporate-customers.update');
+
+    Route::get('delivery-addresses/showlist', [DeliveryAddressController::class, 'showlist'])->name('delivery-addresses.showlist');
 });

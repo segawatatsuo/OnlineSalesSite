@@ -3,7 +3,8 @@
     <div class="order-field">
         <span class="order-label">お届け希望日:</span>
         <span class="order-value">
-            <input type="date" id="delivery_date" name="delivery_date" value="{{ old('delivery_date') }}">
+            <input type="date" id="delivery_date" class="form-control-date" name="delivery_date"
+                value="{{ old('delivery_date') }}">
         </span>
     </div>
     <div class="order-field">

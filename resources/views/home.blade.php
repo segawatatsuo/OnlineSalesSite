@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', '法人会員ページ')
+
 @section('head')
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 @endsection

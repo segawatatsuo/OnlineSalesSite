@@ -170,7 +170,6 @@ class AmazonPayService
 
             \Log::info('AmazonPay pendingPayment() 結果', ['raw' => $response]);
 
-
             $checkoutSession = json_decode($response['response'], true);
             // 与信ID（後でキャプチャに必要）
             $chargePermissionId = $checkoutSession['chargePermissionId'];
@@ -181,7 +180,6 @@ class AmazonPayService
             // === セッションからカート & 住所を取得 ===
             $cart = session('cart', []);
             $address = session('address', []);
-            //dd($address);
 
             if (empty($cart)) {
                 throw new \Exception('カート情報が空です。');

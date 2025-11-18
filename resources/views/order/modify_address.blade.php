@@ -9,13 +9,17 @@
     <link rel="stylesheet" href="{{ asset('css/_responsive.css') }}">
 @endpush
 
+@push('scripts')
+    <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
+@endpush
+
 @section('content')
     <main class="container">
         <main class="main">
             <div class="form-container">
 
                 @if ($type == 'order')
-                    <h1 class="form-title">ご注文者の変更</h1>
+                    <h1 class="form-title">ご注文者の修正</h1>
                     @if (session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
@@ -25,7 +29,7 @@
 
                     <form id="my-form"
                         action="{{ route('corporate-customers.update', ['corporateCustomerId' => Auth::user()->corporateCustomer->id]) }}"
-                        method="post">
+                        method="post" class="h-adr">
                         @csrf
                         <div class="form-section">
                             <h2 class="form-section-title">会社情報</h2>
@@ -59,28 +63,29 @@
 
                             <div class="form-group">
                                 <label for="" class="form-label">郵便番号</label>
-                                <input type="text" id="order_zip" name="order_zip" class="form-input"
+                                <input type="text" id="order_zip" name="order_zip" class="form-input p-postal-code"
                                     value="{{ old('order_zip', Auth::user()->corporateCustomer->order_zip ?? '') }}"
                                     required>
                             </div>
 
                             <div class="form-group">
                                 <label for="" class="form-label">住所（都道府県）</label>
-                                <input type="text" id="order_add01" name="order_add01" class="form-input"
+                                <input type="text" id="order_add01" name="order_add01" class="form-input p-region"
                                     value="{{ old('order_add01', Auth::user()->corporateCustomer->order_add01 ?? '') }}"
                                     required>
                             </div>
 
                             <div class="form-group">
                                 <label for="" class="form-label">住所（市区町村）</label>
-                                <input type="text" id="order_add02" name="order_add02" class="form-input"
+                                <input type="text" id="order_add02" name="order_add02" class="form-input p-locality"
                                     value="{{ old('order_add02', Auth::user()->corporateCustomer->order_add02 ?? '') }}"
                                     required>
                             </div>
 
                             <div class="form-group">
                                 <label for="" class="form-label">市区町村以降の住所</label>
-                                <input type="text" id="order_add03" name="order_add03" class="form-input"
+                                <input type="text" id="order_add03" name="order_add03"
+                                    class="form-input p-extended-address"
                                     value="{{ old('order_add03', Auth::user()->corporateCustomer->order_add03 ?? '') }}"
                                     required>
                             </div>
@@ -95,6 +100,7 @@
 
                         <div class="form-actions">
                             <input type="hidden" name="type" value="order">
+                            <input type="hidden" class="p-country-name" value="Japan">
                             <button type="submit" class="a-button" style="border: none">変更を保存</button>
 
                             <button type="button" class="b-button" style="border: none;"
@@ -104,7 +110,7 @@
                         </div>
                     </form>
                 @else
-                    <h1 class="form-title">お届け先の変更</h1>
+                    <h1 class="form-title">お届け先の修正</h1>
                     @if (session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
@@ -114,7 +120,7 @@
                     @if (!empty($delivery))
                         <form id="my-form"
                             action="{{ route('corporate-customers.update', ['corporateCustomerId' => $delivery->corporate_customer_id ?? null]) }}"
-                            method="POST">
+                            method="POST" class="h-adr">
                             @csrf
                             <div class="form-section">
                                 <h2 class="form-section-title">会社情報</h2>
@@ -144,25 +150,26 @@
 
                                 <div class="form-group">
                                     <label for="" class="form-label">郵便番号</label>
-                                    <input type="text" id="zip" name="zip" class="form-input"
+                                    <input type="text" id="zip" name="zip" class="form-input p-postal-code"
                                         value="{{ old('zip', $delivery->zip ?? '') }}" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="" class="form-label">住所（都道府県）</label>
-                                    <input type="text" id="add01" name="add01" class="form-input"
+                                    <input type="text" id="add01" name="add01" class="form-input p-region"
                                         value="{{ old('add01', $delivery->add01 ?? '') }}" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="" class="form-label">住所（市区町村）</label>
-                                    <input type="text" id="add02" name="add02" class="form-input"
+                                    <input type="text" id="add02" name="add02" class="form-input p-locality"
                                         value="{{ old('add02', $delivery->add02 ?? '') }}" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="" class="form-label">市区町村以降の住所</label>
-                                    <input type="text" id="add03" name="add03" class="form-input"
+                                    <input type="text" id="add03" name="add03"
+                                        class="form-input p-street-address"
                                         value="{{ old('add03', $delivery->add03 ?? '') }}" required>
                                 </div>
 
@@ -174,6 +181,7 @@
                             </div>
 
                             <div class="form-actions">
+                                <input type="hidden" class="p-country-name" value="Japan">
                                 <input type="hidden" name="type" value="delivery">
                                 <button type="submit" class="a-button" style="border: none">変更を保存</button>
 

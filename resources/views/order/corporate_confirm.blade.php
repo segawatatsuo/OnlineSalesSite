@@ -6,6 +6,35 @@
     <link rel="stylesheet" href="{{ asset('css/corporate_confirm.css') }}">
     <link rel="stylesheet" href="{{ asset('css/kakunin-page.css') }}">
     <link rel="stylesheet" href="{{ asset('css/_responsive.css') }}">
+    <style>
+        /* input[type=date] を select と同じように見せる */
+        .form-control-date {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            /* 👈 ← PCでの横幅を制限 */
+            height: calc(2.5rem + 2px);
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-control-date:focus {
+            border-color: #86b7fe;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+    </style>
 @endpush
 
 @push('scripts')
@@ -57,11 +86,12 @@
                     </div>
                     <div style="text-align: right">
                         <a
-                            href="{{ route('corporate_customers.addresses.edit', ['id' => $corporateCustomer->id, 'type' => 'order']) }}">変更</a>
+                            href="{{ route('corporate_customers.addresses.edit', ['id' => $corporateCustomer->id, 'type' => 'order']) }}">修正</a>
                     </div>
                 </div>
 
                 {{-- お届け先 --}}
+
                 <div class="order-card order-shipping-address">
                     <h2 class="order-card-title">お届け先</h2>
 
@@ -132,12 +162,16 @@
 
                     <div style="text-align: right">
                         <a
-                            href="{{ route('corporate_customers.addresses.edit', ['id' => $corporateCustomer->id, 'type' => 'delivery']) }}">変更</a>
+                            href="{{ route('corporate_customers.addresses.edit', ['id' => $corporateCustomer->id, 'type' => 'delivery']) }}">修正</a>
                     </div>
 
 
                     <div style="text-align: right">
-                        <a href="{{ route('delivery-addresses.index', $corporateCustomer->id) }}">お届け先を追加・変更</a>
+                        <a href="{{ route('delivery-addresses.index', $corporateCustomer->id) }}">お届け先を追加</a>
+                    </div>
+
+                    <div style="text-align: right">
+                        <a href="{{ route('delivery-addresses.showlist', $corporateCustomer->id) }}">お届け先を変更</a>
                     </div>
 
 

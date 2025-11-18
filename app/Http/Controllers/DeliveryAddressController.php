@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class DeliveryAddressController extends Controller
 {
     /**
-     * お届け先追加一覧
+     * お届け先追加フォーム
      */
     public function index($corporateCustomerId)
     {
@@ -47,13 +47,24 @@ class DeliveryAddressController extends Controller
 
         $customer->deliveryAddresses()->create($validated);
 
-        return redirect()->route('delivery-addresses.index', $customer->id)
-            ->with('success', 'お届け先を追加しました。');
+        //return redirect()->route('delivery-addresses.index', $customer->id)->with('success', 'お届け先を追加しました。');
+        return redirect()->route('order.create', $customer->id)->with('success', 'お届け先を追加しました。');
     }
+
+    /*登録済の住所一覧*/
+    public function showlist($corporateCustomerId)
+    {
+        $lists = DeliveryAddress::where('corporate_customer_id', $corporateCustomerId)->where('is_default', 0)->get();
+        return view('delivery_addresses.show', compact('lists', 'corporateCustomerId'));
+    }
+
+
+
 
     /**
      * デフォルト変更
      */
+    /*
     public function setDefault($corporateCustomerId, $addressId)
     {
         $customer = CorporateCustomer::findOrFail($corporateCustomerId);
@@ -65,6 +76,31 @@ class DeliveryAddressController extends Controller
 
         return redirect()->back()->with('success', 'デフォルトのお届け先を変更しました。');
     }
+    */
+
+    // 改造後のsetDefaultメソッド
+    // 修正後の setDefaultメソッド (推奨)
+    // 引数にIlluminate\Http\Request $request を追加
+    public function setDefault(Request $request, $corporateCustomerId, $addressId)
+    {
+        // hidden field の値は $request->input('redirectUrl') で取得できる
+        $redirectUrl = $request->input('redirectUrl');
+
+        $customer = CorporateCustomer::findOrFail($corporateCustomerId);
+
+        $customer->deliveryAddresses()->update(['is_default' => false]);
+        $customer->deliveryAddresses()
+                 ->where('id', $addressId)
+                 ->update(['is_default' => true]);
+
+        // リダイレクト先の判定と実行（元のロジック）
+        if ($redirectUrl) {
+            return redirect($redirectUrl)->with('success', 'デフォルトのお届け先を変更しました。');
+        }
+
+        return redirect()->back()->with('success', 'デフォルトのお届け先を変更しました。');
+    }
+
 
     /**
      * 削除

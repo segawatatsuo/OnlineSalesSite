@@ -37,6 +37,9 @@ class CorporateCustomer extends Model
         return $this->hasMany(CorporateCustomerAddress::class);
     }
 
+
+
+
     // --- 関連ユーザー削除処理 ---
     protected static function boot()
     {

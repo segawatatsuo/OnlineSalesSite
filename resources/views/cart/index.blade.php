@@ -63,7 +63,7 @@
 
         .checkout-btn {
             /*background: #198754;
-                                                        color: #fff;*/
+                                                                        color: #fff;*/
         }
 
         .checkout-btn:hover {

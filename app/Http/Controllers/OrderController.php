@@ -33,63 +33,7 @@ class OrderController extends Controller
         $this->shippingFeeService = $shippingFeeService;
     }
 
-    /*
-        public function create(Request $request, CartService $cartService)
-        {
-            $cart = session()->get('cart', []);
 
-            if (empty($cart)) {
-                return redirect()->route('top')->with('warning', 'カートが空です。');
-            }
-
-            $deliveryTimes = DeliveryTime::pluck('time'); // 配送時間帯のtimeカラムの値のみを取得
-
-            $user = auth()->user();
-
-            if ($user && $user->user_type === 'corporate') {
-
-
-                // データベースをリロードして最新のデータを取得
-                $user->corporateCustomer->refresh();
-
-
-                $prefecture = $user->corporateCustomer->delivery_add01;
-                $corporat_customer = $user->corporateCustomer;
-                $corporate_customer_id = $user->corporateCustomer->id;
-
-                session(['address' => $corporat_customer]);
-                session(['corporate_customer_id' => $corporate_customer_id]);
-
-
-                $cart = $this->cartService->getCartItems($user, $prefecture);
-                session(['shipping_fee' => $cart['shipping_fee']]);
-
-                $getCartItems = $this->cartService->getCartItems(null, $prefecture);
-                return view('order.corporate_confirm', [
-                    'user' => $user,
-                    'cart' => $cart['items'],
-                    'subtotal' => $cart['subtotal'],
-                    'shipping_fee' => $cart['shipping_fee'],
-                    'total' => $cart['total'],
-                    'deliveryTimes' => $deliveryTimes,
-                    'getCartItems' => $getCartItems
-                ]);
-            }
-
-            $prefecture = null;
-            $cart = $this->cartService->getCartItems($user, $prefecture);
-            session(['shipping_fee' => $cart['shipping_fee']]);
-
-
-            return view('order.create', [
-                'items' => $cart['items'],
-                'subtotal' => $cart['subtotal'],
-                'shipping_fee' => $cart['shipping_fee'],
-                'total' => $cart['total'],
-                'deliveryTimes' => $deliveryTimes,
-            ]);
-        }
-    */
     public function create(Request $request, CartService $cartService)
     {
         $cart = session()->get('cart', []);
@@ -110,22 +54,43 @@ class OrderController extends Controller
 
             // 🚩 デフォルトお届け先を取得（なければ最初の住所）
             $defaultAddress = $corporateCustomer->defaultDeliveryAddress ?? $corporateCustomer->deliveryAddresses()->first();
-
-            // 🚩 住所セッションをセット
-            session([
-                /*'address' => $defaultAddress,*/
-                'address' => $corporateCustomer,
-                'corporate_customer_id' => $corporate_customer_id,
-            ]);
-
             // 配送料計算に使う都道府県
             $prefecture = $defaultAddress ? $defaultAddress->add01 : $corporateCustomer->order_add01;
-
             // カート情報を取得
             $cartData = $cartService->getCartItems($user, $prefecture);
-            session(['shipping_fee' => $cartData['shipping_fee']]);
+            //お届け先に指定された住所
+            $deliveryAddress = $corporateCustomer->deliveryAddresses->where('is_default', 1)->first();
 
+            /*addressに全部まとめる*/
+            $address['order_company_name'] = $corporateCustomer['order_company_name'] ? $corporateCustomer['order_company_name'] : '';
+            $address['order_department'] = $corporateCustomer['order_department'] ? $corporateCustomer['order_department'] : '';
+            $address['order_sei'] = $corporateCustomer['order_sei'] ? $corporateCustomer['order_sei'] : '';
+            $address['order_mei'] = $corporateCustomer['order_mei'] ? $corporateCustomer['order_mei'] : '';
+            $address['order_email'] = $corporateCustomer['order_email'] ? $corporateCustomer['order_email'] : '';
+            $address['order_phone'] = $corporateCustomer['order_phone'] ? $corporateCustomer['order_phone'] : '';
+            $address['order_zip'] = $corporateCustomer['order_zip'] ? $corporateCustomer['order_zip'] : '';
+            $address['order_add01'] = $corporateCustomer['order_add01'];
+            $address['order_add02'] = $corporateCustomer['order_add02'];
+            $address['order_add03'] = $corporateCustomer['order_add03'];
 
+            $address['delivery_company_name'] = $deliveryAddress['company_name'] ? $deliveryAddress['company_name'] : '';
+            $address['delivery_department'] = $deliveryAddress['department'] ? $deliveryAddress['department'] : '';
+            $address['delivery_sei'] = $deliveryAddress['sei'] ? $deliveryAddress['sei'] : '';
+            $address['delivery_mei'] = $deliveryAddress['mei'] ? $deliveryAddress['mei'] : '';
+            $address['delivery_email'] = $deliveryAddress['email'] ? $deliveryAddress['email'] : '';
+            $address['delivery_phone'] = $deliveryAddress['phone'] ? $deliveryAddress['phone'] : '';
+            $address['delivery_zip'] = $deliveryAddress['zip'] ? $deliveryAddress['zip'] : '';
+            $address['delivery_add01'] = $deliveryAddress['add01'];
+            $address['delivery_add02'] = $deliveryAddress['add02'];
+            $address['delivery_add03'] = $deliveryAddress['add03'];
+
+            session([
+                'corporate_customer_id' => $corporate_customer_id,
+                'address' => $address,
+                'shipping_fee' => $cartData['shipping_fee'],
+                'subtotal' => $cartData['subtotal']
+            ]);
+            //dd(Session::all());
             return view('order.corporate_confirm', [
                 'user' => $user,
                 'corporateCustomer' => $corporateCustomer,

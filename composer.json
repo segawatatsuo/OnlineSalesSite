@@ -11,6 +11,7 @@
         "doctrine/dbal": "^3.10",
         "encore/laravel-admin": "^1.8",
         "fruitcake/laravel-cors": "^2.0",
+        "garygreen/pretty-routes": "^1.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^3.11",
         "laravel-admin-ext/summernote": "^1.0",
@@ -18,9 +19,11 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
+        "rap2hpoutre/laravel-log-viewer": "^2.5",
         "square/square": "^42.2"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.7",
         "beyondcode/laravel-er-diagram-generator": "^4.0",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
