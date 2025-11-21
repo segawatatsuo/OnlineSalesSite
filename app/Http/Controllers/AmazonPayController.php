@@ -46,7 +46,7 @@ class AmazonPayController extends Controller
         try {
             $amount = $request->input('amount');
             $paymentData = $this->amazonPayService->createPayload($amount);
-
+            //dd($paymentData);
             $paymentData['amount'] = $amount;
             return view('amazonpay.payment_confirm', $paymentData);
         } catch (\Exception $e) {

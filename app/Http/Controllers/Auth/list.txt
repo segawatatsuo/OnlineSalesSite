@@ -1,0 +1,86 @@
+app/
+└── Http/
+    └── Controllers/
+        ├── ProductController.php
+        ├── ProductShowController.php
+        ├── CartController.php
+        ├── CheckoutController.php
+        ├── OrderController.php
+
+        ├── User/
+        │   ├── UserDashboardController.php
+        │   ├── UserAddressController.php
+        │   └── UserProfileController.php
+
+        ├── Auth/
+        │   ├── RegisteredUserController.php
+        │   ├── AuthenticatedSessionController.php
+        │   ├── PasswordResetController.php
+        │   └── EmailVerificationController.php
+
+        ├── Biz/
+        │   ├── BizProductController.php
+        │   ├── BizOrderController.php
+        │   └── BizAuthController.php
+
+        ├── Owner/
+        │   ├── OwnerDashboardController.php
+        │   ├── OwnerProductController.php
+        │   ├── OwnerOrderController.php
+        │   └── OwnerCustomerController.php
+
+        └── Admin/
+            ├── AdminProductController.php
+            ├── AdminCategoryController.php
+            └── AdminCategorizationController.php
+
+-----------------------------------------
+
+php artisan make:model Product -m
+php artisan make:model ProductImage -m
+php artisan make:model Category -m
+php artisan make:model Categorization -m
+
+php artisan make:model Cart -m
+php artisan make:model CartItem -m
+
+php artisan make:model Order -m
+php artisan make:model OrderItem -m
+
+php artisan make:model UserAddress -m
+php artisan make:model BizCustomer -m
+
+-----------------------------------------
+
+php artisan make:controller ProductController
+php artisan make:controller ProductShowController
+php artisan make:controller CartController
+php artisan make:controller CheckoutController
+php artisan make:controller OrderController
+
+php artisan make:controller User/UserDashboardController
+php artisan make:controller User/UserAddressController
+php artisan make:controller User/UserProfileController
+
+php artisan make:controller Auth/RegisteredUserController
+php artisan make:controller Auth/AuthenticatedSessionController
+php artisan make:controller Auth/PasswordResetController
+php artisan make:controller Auth/EmailVerificationController
+
+php artisan make:controller Biz/BizProductController
+php artisan make:controller Biz/BizOrderController
+php artisan make:controller Biz/BizAuthController
+
+php artisan make:controller Owner/OwnerDashboardController
+php artisan make:controller Owner/OwnerProductController
+php artisan make:controller Owner/OwnerOrderController
+php artisan make:controller Owner/OwnerCustomerController
+
+php artisan make:controller Admin/AdminProductController
+php artisan make:controller Admin/AdminCategoryController
+php artisan make:controller Admin/AdminCategorizationController
+
+-----------------------------------------
+
+
+
